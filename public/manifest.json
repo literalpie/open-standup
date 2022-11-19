@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "Open Standup",
+  "short_name": "Open Standup",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An app to use during standups."
+}

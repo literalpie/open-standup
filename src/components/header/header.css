@@ -1,0 +1,6 @@
+header {
+  display: flex;
+  background: white;
+  border-bottom: 10px solid var(--qwik-dark-purple);
+  padding: 4px 8px;
+}
