@@ -1,8 +1,9 @@
-import { component$, useStore, $ } from "@builder.io/qwik";
+import { component$, useStore, $, useStylesScoped$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { PersonStatus } from "~/components/person-status/person-status";
 import { PersonState, StandupState } from "~/shared/types";
 import { useSyncedStandupState } from "~/hooks/useSyncedStandupState";
+import styles from "./index.css?inline";
 
 const makeInitialPeopleState = (names: string[]): PersonState[] =>
   names.map((name, index) => ({ done: false, name, order: index }));
@@ -26,6 +27,7 @@ export const initialStandupState: StandupState = {
 
 export default component$(() => {
   const standupState = useStore(initialStandupState, { recursive: true });
+  useStylesScoped$(styles);
   useSyncedStandupState(standupState);
   // calculates on every render, but okay because people will never be large
   const currentPerson = standupState.people.find(
@@ -60,34 +62,40 @@ export default component$(() => {
           />
         );
       })}
-      {standupState.allDone ? (
-        <>
-          All Done!
-          <button
-            onClick$={() => {
-              standupState.allDone = initialStandupState.allDone;
-              standupState.orderPosition = initialStandupState.orderPosition;
-              standupState.people.forEach((person) => (person.done = false));
-            }}
-          >
-            Reset
-          </button>
-        </>
-      ) : (
-        <>
-          <button
-            onClick$={() => {
-              if (currentPerson) {
-                currentPerson.done = true;
-              }
-              setNextOrderPosition();
-            }}
-          >
-            Next
-          </button>
-          <button onClick$={setNextOrderPosition}>Skip</button>
-        </>
-      )}
+      <div class="button-container">
+        {standupState.allDone ? (
+          <>
+            <div class="flex-grow">All Done!</div>
+            <button
+              class="flex-grow"
+              onClick$={() => {
+                standupState.allDone = initialStandupState.allDone;
+                standupState.orderPosition = initialStandupState.orderPosition;
+                standupState.people.forEach((person) => (person.done = false));
+              }}
+            >
+              Reset
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              class="flex-grow"
+              onClick$={() => {
+                if (currentPerson) {
+                  currentPerson.done = true;
+                }
+                setNextOrderPosition();
+              }}
+            >
+              Next
+            </button>
+            <button class="flex-grow" onClick$={setNextOrderPosition}>
+              Skip
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 });
