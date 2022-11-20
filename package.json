@@ -36,5 +36,10 @@
     "vercel": "^28.4.17",
     "vite": "3.2.2",
     "vite-tsconfig-paths": "3.5.0"
+  },
+  "dependencies": {
+    "@syncedstore/core": "^0.4.2",
+    "y-webrtc": "^10.2.3",
+    "yjs": "^13.5.42"
   }
 }

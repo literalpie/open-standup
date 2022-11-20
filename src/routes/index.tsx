@@ -2,9 +2,11 @@ import { component$, useStore, $ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { PersonStatus } from "~/components/person-status/person-status";
 import { PersonState, StandupState } from "~/shared/types";
+import { useSyncedStandupState } from "~/hooks/useSyncedStandupState";
 
 const makeInitialPeopleState = (names: string[]): PersonState[] =>
   names.map((name, index) => ({ done: false, name, order: index }));
+
 const initialPeople = makeInitialPeopleState([
   "Ben",
   "Chaz",
@@ -24,6 +26,7 @@ export const initialStandupState: StandupState = {
 
 export default component$(() => {
   const standupState = useStore(initialStandupState, { recursive: true });
+  useSyncedStandupState(standupState);
   // calculates on every render, but okay because people will never be large
   const currentPerson = standupState.people.find(
     (person) => person.order === standupState.orderPosition
