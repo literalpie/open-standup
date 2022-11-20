@@ -1,5 +1,5 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
-import style from "./PersonStatus.css?inline";
+import style from "./person-status.css?inline";
 
 export const PersonStatus = component$(
   ({

@@ -1,6 +1,6 @@
 import { component$, useStore, $ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import { PersonStatus } from "~/components/person-status/PersonStatus";
+import { PersonStatus } from "~/components/person-status/person-status";
 import { PersonState, StandupState } from "~/shared/types";
 
 const makeInitialPeopleState = (names: string[]): PersonState[] =>
