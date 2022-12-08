@@ -1,5 +1,9 @@
-import { component$, Slot } from "@builder.io/qwik";
+import { component$, Slot, createContext } from "@builder.io/qwik";
+import { Person } from "~/shared/types";
 import Header from "../components/header/header";
+
+export const standupStatesContext =
+  createContext<Record<string, Person[]>>("standup-state");
 
 export default component$(() => {
   return (

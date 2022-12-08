@@ -1,8 +1,12 @@
-export interface PersonState {
-  name: string;
-  order: number;
+export interface PersonState extends Person {
   done: boolean;
   updateTime?: number;
+}
+
+export interface Person {
+  name: string;
+  order: number;
+  id: number;
 }
 
 export interface StandupState {
@@ -10,4 +14,5 @@ export interface StandupState {
   orderPosition?: number;
   people: PersonState[];
   allDone: boolean;
+  standupId: string;
 }
