@@ -2,11 +2,11 @@
   "name": "my-qwik-basic-starter",
   "description": "App with Routing built-in (recommended)",
   "engines": {
-    "node": "^18.0.0"
+    "node": "^16.0.0"
   },
   "private": true,
   "scripts": {
-    "build": "qwik build",
+    "build": "echo node -v && qwik build",
     "build.client": "vite build",
     "build.preview": "vite build --ssr src/entry.preview.tsx",
     "build.server": "vite build -c adaptors/vercel-edge/vite.config.ts",
@@ -25,7 +25,7 @@
     "@builder.io/qwik": "0.15.2",
     "@builder.io/qwik-city": "0.0.128",
     "@types/eslint": "8.4.9",
-    "@types/node": "18.11.10",
+    "@types/node": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "5.42.0",
     "@typescript-eslint/parser": "5.42.0",
     "eslint": "8.26.0",
@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@syncedstore/core": "^0.4.2",
-    "node": "^19.2.0",
     "y-webrtc": "^10.2.3",
     "yjs": "^13.5.43"
   }
