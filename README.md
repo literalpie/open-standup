@@ -10,6 +10,12 @@ Everyone who opens the app anywhere gets their state synced using p2p tech (no c
 
 This is just a very basic POC right now. The names are hard-coded, and there's only one instance.
 
+### How to use
+
+go to https://open-standup.vercel.app to see a basic demo with a preset list of users. Anyone who is viewing the demo at the same time will see the same state as you.
+
+Go to https://open-standup.vercel.app/new to create a new standup with a custom list of participants. When you click "create standup", the URL will change to one that you can share with others to join your standup.
+
 ### Future
 
 I mostly made this app to play with Qwik, and I thought it would be cool to have an OSS standup app.
