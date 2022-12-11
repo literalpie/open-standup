@@ -7,7 +7,11 @@ import {
 import { syncedStore, getYjsDoc, observeDeep } from "@syncedstore/core";
 import { WebrtcProvider } from "y-webrtc";
 import { YMapEvent } from "yjs";
-import { Person, PersonState, StandupState } from "~/shared/types";
+import {
+  Person,
+  PersonState,
+  StandupState,
+} from "~/shared/standup-state.types";
 
 interface PartialStandupState {
   orderPosition?: number;
@@ -65,8 +69,8 @@ export const connectToExistingStandup = ({
     standupState: PartialStandupState;
     completeItems: number[];
   }>({
-    standupState: {} as any,
-    completeItems: [] as any,
+    standupState: {} as PartialStandupState,
+    completeItems: [],
   });
   const doc = getYjsDoc(store);
   const webrtcProvider = new WebrtcProvider(
@@ -90,10 +94,8 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
     track(() => standupState.allDone);
     track(() => standupState.orderPosition);
     track(() => standupState.people);
-    console.log("sync client effect", standupState);
     // If the only thing we have is the ID, we want to connect without setting any state.
     if (standupState.standupId && standupState.people === undefined) {
-      console.log("connect without setting state");
       const { store } = connectToExistingStandup({
         standupId: standupState.standupId,
       });
@@ -138,11 +140,6 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
         storedCompleteItems.splice(0, storedCompleteItems.length);
       }
     } else {
-      console.log(
-        "new sync needed",
-        syncedStateStore.value,
-        standupState.standupId
-      );
       // store could be set to undefined at any time because it's not serialized. Recover
       const { store } = getSyncedStandupStore({
         orderPosition: standupState.orderPosition,
@@ -157,7 +154,6 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
           })) ?? [],
       });
       syncedStateStore.value = noSerialize(store);
-      console.log("new sync", syncedStateStore.value?.standupState.standupId);
     }
   });
   useWatch$(({ cleanup, track }) => {
@@ -175,28 +171,27 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
         mepEvent: YMapEvent<{ allDone: boolean; orderPosition: number }>
       ) => {
         if (mepEvent.keysChanged.has("allDone")) {
-          console.log("allDone change in synced store");
+          console.debug("allDone change in synced store");
           standupState.allDone =
             syncedStateStore.value?.standupState.allDone ?? false;
         }
         if (mepEvent.keysChanged.has("orderPosition")) {
-          console.log("orderPosition change in synced store");
+          console.debug("orderPosition change in synced store");
           standupState.orderPosition =
             syncedStateStore.value?.standupState.orderPosition;
         }
         if (mepEvent.keysChanged.has("people")) {
-          console.log("people change in synced store");
+          console.debug("people change in synced store");
           standupState.people =
             syncedStateStore.value?.standupState.people?.map(
               peopleStateFromPeople(syncedStateStore.value.completeItems)
             );
-          console.log("new people", standupState.people);
         }
       };
       const unobserverCompleteItems = observeDeep(
         syncedStateStore.value.completeItems,
         () => {
-          console.log("complete items change in synced store");
+          console.debug("complete items change in synced store");
           standupState.people?.forEach((person) => {
             const personIsDone = syncedStateStore.value?.completeItems.includes(
               person.order
@@ -211,7 +206,6 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
       // use y obeserve because syncedStore doesn't tell us which property changed
       yjs.get("standupState").observe(observeFunc);
       cleanup(() => {
-        console.log("cleaning");
         yjs.get("standupState").unobserve(observeFunc);
         unobserverCompleteItems();
       });
