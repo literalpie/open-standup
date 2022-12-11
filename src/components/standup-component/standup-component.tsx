@@ -45,7 +45,7 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
             <>
               <div class="flex-grow">All Done!</div>
               <button
-                class="btn-primary flex-grow"
+                class="btn flex-grow"
                 onClick$={() => {
                   standupState.allDone = initialStandupState.allDone;
                   standupState.orderPosition =
@@ -61,7 +61,7 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
           ) : (
             <>
               <button
-                class="btn-primary flex-grow"
+                class="btn flex-grow"
                 onClick$={() => {
                   if (currentPerson) {
                     currentPerson.done = true;
@@ -72,7 +72,7 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
                 Next
               </button>
               <button
-                class="flex-grow btn-primary"
+                class="btn flex-grow btn-outline"
                 onClick$={setNextOrderPosition}
               >
                 Skip

@@ -72,14 +72,14 @@ export default component$(() => {
           />
         </div>
         <button
-          class="btn btn-primary self-end"
+          class="btn self-end"
           type="button"
           onClick$={submitNewParticipant}
         >
           Add Participant
         </button>
       </span>
-      <button class="btn btn-primary self-start" type="submit">
+      <button class="btn self-start" type="submit">
         Create Standup
       </button>
     </form>
