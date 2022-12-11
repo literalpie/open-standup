@@ -1,12 +1,13 @@
-import { component$, useStyles$ } from "@builder.io/qwik";
+import { component$, useContextProvider, useStyles$ } from "@builder.io/qwik";
 import {
-  QwikCity,
+  QwikCityProvider,
   RouterOutlet,
   ServiceWorkerRegister,
 } from "@builder.io/qwik-city";
 import { RouterHead } from "./components/router-head/router-head";
 
 import globalStyles from "./global.css?inline";
+import { standupParticipantsContext } from "./shared/standup-participants.context";
 
 export default component$(() => {
   /**
@@ -16,9 +17,10 @@ export default component$(() => {
    * Dont remove the `<head>` and `<body>` elements.
    */
   useStyles$(globalStyles);
+  useContextProvider(standupParticipantsContext, {});
 
   return (
-    <QwikCity>
+    <QwikCityProvider>
       <head>
         <meta charSet="utf-8" />
         <link rel="manifest" href="/manifest.json" />
@@ -28,6 +30,6 @@ export default component$(() => {
         <RouterOutlet />
         <ServiceWorkerRegister />
       </body>
-    </QwikCity>
+    </QwikCityProvider>
   );
 });
