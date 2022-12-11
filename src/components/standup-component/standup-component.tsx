@@ -1,12 +1,10 @@
-import { component$, useStylesScoped$, $ } from "@builder.io/qwik";
+import { component$, $ } from "@builder.io/qwik";
 import { initialStandupState } from "~/routes";
 import { StandupState } from "~/shared/standup-state.types";
 import { PersonStatus } from "../person-status/person-status";
-import styles from "./standup-component.css?inline";
 
 export const StandupComponent = component$<{ standupState: StandupState }>(
   ({ standupState }) => {
-    useStylesScoped$(styles);
     // calculates on every render, but okay because people will never be large
     const currentPerson = standupState.people?.find(
       (person) => person.order === standupState.orderPosition
@@ -42,12 +40,12 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
             />
           );
         })}
-        <div class="button-container">
+        <div class="pt-3 flex gap-1">
           {standupState.allDone ? (
             <>
               <div class="flex-grow">All Done!</div>
               <button
-                class="flex-grow"
+                class="btn-primary flex-grow"
                 onClick$={() => {
                   standupState.allDone = initialStandupState.allDone;
                   standupState.orderPosition =
@@ -63,7 +61,7 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
           ) : (
             <>
               <button
-                class="flex-grow"
+                class="btn-primary flex-grow"
                 onClick$={() => {
                   if (currentPerson) {
                     currentPerson.done = true;
@@ -73,7 +71,10 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
               >
                 Next
               </button>
-              <button class="flex-grow" onClick$={setNextOrderPosition}>
+              <button
+                class="flex-grow btn-primary"
+                onClick$={setNextOrderPosition}
+              >
                 Skip
               </button>
             </>

@@ -1,5 +1,4 @@
-import { component$, useStylesScoped$ } from "@builder.io/qwik";
-import style from "./person-status.css?inline";
+import { component$ } from "@builder.io/qwik";
 
 export const PersonStatus = component$(
   ({
@@ -11,13 +10,15 @@ export const PersonStatus = component$(
     done: boolean;
     current: boolean;
   }) => {
-    useStylesScoped$(style);
     return (
       <div
-        class={{
-          done: done,
-          current: current,
-        }}
+        class={[
+          "px-2",
+          {
+            "bg-success text-success-content": done,
+            "bg-info text-info-content": current,
+          },
+        ]}
       >
         {name}
       </div>
