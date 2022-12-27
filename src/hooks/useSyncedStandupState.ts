@@ -1,8 +1,8 @@
 import {
   noSerialize,
   useClientEffect$,
-  useWatch$,
   useSignal,
+  useTask$,
 } from "@builder.io/qwik";
 import { syncedStore, getYjsDoc, observeDeep } from "@syncedstore/core";
 import { WebrtcProvider } from "y-webrtc";
@@ -156,7 +156,7 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
       syncedStateStore.value = noSerialize(store);
     }
   });
-  useWatch$(({ cleanup, track }) => {
+  useTask$(({ cleanup, track }) => {
     track(() => syncedStateStore.value);
     if (syncedStateStore.value !== undefined) {
       standupState.allDone = syncedStateStore.value.standupState.allDone;
