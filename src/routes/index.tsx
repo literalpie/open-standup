@@ -25,7 +25,7 @@ export const initialStandupState: StandupState = {
   standupId: "literalpie-open-standup",
 };
 export default component$(() => {
-  const standupState = useStore(initialStandupState, { recursive: true });
+  const standupState = useStore(initialStandupState, { recursive: false });
   useSyncedStandupState(standupState);
   return (
     <div>
