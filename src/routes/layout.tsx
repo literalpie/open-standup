@@ -4,17 +4,12 @@ import Header from "../components/header/header";
 export default component$(() => {
   return (
     <>
-      <main>
-        <Header />
-        <section>
+      <Header />
+      <main class="flex justify-center">
+        <section class="flex-grow p-2 max-w-4xl">
           <Slot />
         </section>
       </main>
-      <footer>
-        <a href="https://www.literalpie.com/" target="_blank">
-          Made with ♡ by Ben
-        </a>
-      </footer>
     </>
   );
 });

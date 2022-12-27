@@ -1,9 +1,0 @@
-.new-participant-form-row,
-.new-participant-form-row > label {
-  display: flex;
-  gap: 5px;
-}
-
-.new-participant {
-  color: gray;
-}

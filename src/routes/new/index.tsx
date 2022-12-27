@@ -1,7 +1,6 @@
 import {
   component$,
   useSignal,
-  useStylesScoped$,
   $,
   useClientEffect$,
   useContext,
@@ -9,10 +8,8 @@ import {
 import { useNavigate } from "@builder.io/qwik-city";
 import { Person } from "~/shared/standup-state.types";
 import { standupParticipantsContext } from "../../shared/standup-participants.context";
-import styles from "./index.css?inline";
 
 export default component$(() => {
-  useStylesScoped$(styles);
   const participants = useSignal<Person[]>([]);
   const newPartic = useSignal<string>();
   const navigate = useNavigate();
@@ -43,6 +40,7 @@ export default component$(() => {
 
   return (
     <form
+      class="flex flex-col gap-2"
       preventdefault:submit
       onSubmit$={() => {
         const semiRandomNumber = new Date().getTime();
@@ -55,13 +53,16 @@ export default component$(() => {
           <li key={partic.id}>{partic.name}</li>
         ))}
         {newPartic.value?.length ? (
-          <li class="new-participant">{newPartic.value}</li>
+          <li class="text-opacity-60 text-base-content">{newPartic.value}</li>
         ) : null}
       </ul>
-      <span class="new-participant-form-row">
-        <label>
-          New Participant:
+      <span class="flex gap-2 align">
+        <div class="form-control">
+          <label for="new-participant-input" class="label">
+            New Participant:
+          </label>
           <input
+            class="input input-bordered "
             id="new-participant-input"
             type="text"
             value={newPartic.value}
@@ -69,12 +70,18 @@ export default component$(() => {
               (newPartic.value = (ev.target as HTMLInputElement).value)
             }
           />
-        </label>
-        <button type="button" onClick$={submitNewParticipant}>
+        </div>
+        <button
+          class="btn self-end"
+          type="button"
+          onClick$={submitNewParticipant}
+        >
           Add Participant
         </button>
       </span>
-      <button type="submit">Create Standup</button>
+      <button class="btn self-start" type="submit">
+        Create Standup
+      </button>
     </form>
   );
 });

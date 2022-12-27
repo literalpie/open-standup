@@ -1,12 +1,9 @@
-import { component$, useStylesScoped$ } from "@builder.io/qwik";
-import styles from "./header.css?inline";
+import { component$ } from "@builder.io/qwik";
 
 export default component$(() => {
-  useStylesScoped$(styles);
-
   return (
-    <header>
-      <h1>Open Standup</h1>
+    <header class="p-2 border-b-2 sticky top-0 bg-base-100 flex flex-col">
+      <h1 class="font-bold text-xl self-center">Open Standup</h1>
     </header>
   );
 });
