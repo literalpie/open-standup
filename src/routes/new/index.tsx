@@ -7,7 +7,7 @@ import {
 } from "@builder.io/qwik";
 import { useNavigate } from "@builder.io/qwik-city";
 import { Person } from "~/shared/standup-state.types";
-import { standupParticipantsContext } from "../../shared/standup-participants.context";
+import { standupParticipantsContext } from "~/shared/standup-participants.context";
 
 export default component$(() => {
   const participants = useSignal<Person[]>([]);

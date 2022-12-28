@@ -37,7 +37,7 @@ export default component$(() => {
     | { standupId: StandupState["standupId"] } = peopleForStandupId
     ? makeInitialStandupState(peopleForStandupId, location.params.standupId)
     : { standupId: location.params.standupId };
-  const standupState = useStore(matchingStandup, { recursive: true });
+  const standupState = useStore(matchingStandup, { recursive: false });
   useSyncedStandupState(standupState);
 
   return (

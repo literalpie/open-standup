@@ -1,11 +1,12 @@
 import {
   noSerialize,
   useClientEffect$,
-  useWatch$,
   useSignal,
+  useTask$,
 } from "@builder.io/qwik";
 import { syncedStore, getYjsDoc, observeDeep } from "@syncedstore/core";
 import { WebrtcProvider } from "y-webrtc";
+import { IndexeddbPersistence } from "y-indexeddb";
 import { YMapEvent } from "yjs";
 import {
   Person,
@@ -53,11 +54,15 @@ export const getSyncedStandupStore = ({
   store.standupState.people = people;
   store.completeItems.push(...completeItems);
   const doc = getYjsDoc(store);
+  const indexdbProvider = new IndexeddbPersistence(
+    makeStandupRoomName(standupId),
+    doc
+  );
   const webrtcProvider = new WebrtcProvider(
     makeStandupRoomName(standupId),
     doc
   );
-  return { webrtcProvider, store };
+  return { webrtcProvider, indexdbProvider, store };
 };
 
 export const connectToExistingStandup = ({
@@ -73,11 +78,15 @@ export const connectToExistingStandup = ({
     completeItems: [],
   });
   const doc = getYjsDoc(store);
+  const indexdbProvider = new IndexeddbPersistence(
+    makeStandupRoomName(standupId),
+    doc
+  );
   const webrtcProvider = new WebrtcProvider(
     makeStandupRoomName(standupId),
     doc
   );
-  return { webrtcProvider, store };
+  return { webrtcProvider, indexdbProvider, store };
 };
 
 export const peopleStateFromPeople =
@@ -156,7 +165,7 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
       syncedStateStore.value = noSerialize(store);
     }
   });
-  useWatch$(({ cleanup, track }) => {
+  useTask$(({ cleanup, track }) => {
     track(() => syncedStateStore.value);
     if (syncedStateStore.value !== undefined) {
       standupState.allDone = syncedStateStore.value.standupState.allDone;
@@ -192,12 +201,14 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
         syncedStateStore.value.completeItems,
         () => {
           console.debug("complete items change in synced store");
-          standupState.people?.forEach((person) => {
+          standupState.people = standupState.people?.map((person) => {
             const personIsDone = syncedStateStore.value?.completeItems.includes(
               person.order
             );
             if (personIsDone !== undefined && person.done !== personIsDone) {
-              person.done = personIsDone;
+              return { ...person, done: personIsDone };
+            } else {
+              return person;
             }
           });
         }

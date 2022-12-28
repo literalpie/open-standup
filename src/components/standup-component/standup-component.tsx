@@ -50,9 +50,10 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
                   standupState.allDone = initialStandupState.allDone;
                   standupState.orderPosition =
                     initialStandupState.orderPosition;
-                  standupState.people?.forEach(
-                    (person) => (person.done = false)
-                  );
+                  standupState.people = standupState.people.map((person) => ({
+                    ...person,
+                    done: false,
+                  }));
                 }}
               >
                 Reset
@@ -64,7 +65,10 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
                 class="btn flex-grow"
                 onClick$={() => {
                   if (currentPerson) {
-                    currentPerson.done = true;
+                    standupState.people = standupState.people.map((person) => ({
+                      ...person,
+                      done: person.id === currentPerson.id ? true : person.done,
+                    }));
                   }
                   setNextOrderPosition();
                 }}
