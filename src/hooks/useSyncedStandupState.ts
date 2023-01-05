@@ -8,11 +8,7 @@ import { syncedStore, getYjsDoc, observeDeep } from "@syncedstore/core";
 import { WebrtcProvider } from "y-webrtc";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { YMapEvent } from "yjs";
-import {
-  Person,
-  PersonState,
-  StandupState,
-} from "~/shared/standup-state.types";
+import { Person, PersonState, StandupMeeting } from "~/shared/types";
 
 interface PartialStandupState {
   orderPosition?: number;
@@ -29,7 +25,7 @@ type SyncedStore = ReturnType<
 >;
 
 export const makeStandupRoomName = (id: string) => {
-  return `com.literalpie.open-standup.${id}`;
+  return `com.literalpie.open-standup.standup.${id}`;
 };
 
 export const getSyncedStandupStore = ({
@@ -54,15 +50,11 @@ export const getSyncedStandupStore = ({
   store.standupState.people = people;
   store.completeItems.push(...completeItems);
   const doc = getYjsDoc(store);
-  const indexdbProvider = new IndexeddbPersistence(
-    makeStandupRoomName(standupId),
-    doc
-  );
-  const webrtcProvider = new WebrtcProvider(
-    makeStandupRoomName(standupId),
-    doc
-  );
-  return { webrtcProvider, indexdbProvider, store };
+  new IndexeddbPersistence(makeStandupRoomName(standupId), doc);
+  const rtc = new WebrtcProvider(makeStandupRoomName(standupId), doc);
+
+  // rtc.awareness.
+  return { store };
 };
 
 export const connectToExistingStandup = ({
@@ -78,15 +70,9 @@ export const connectToExistingStandup = ({
     completeItems: [],
   });
   const doc = getYjsDoc(store);
-  const indexdbProvider = new IndexeddbPersistence(
-    makeStandupRoomName(standupId),
-    doc
-  );
-  const webrtcProvider = new WebrtcProvider(
-    makeStandupRoomName(standupId),
-    doc
-  );
-  return { webrtcProvider, indexdbProvider, store };
+  new IndexeddbPersistence(makeStandupRoomName(standupId), doc);
+  new WebrtcProvider(makeStandupRoomName(standupId), doc);
+  return { store };
 };
 
 export const peopleStateFromPeople =
@@ -97,16 +83,18 @@ export const peopleStateFromPeople =
     order: p.order,
   });
 
-export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
+export const useSyncedStandupState = (
+  standupState: Partial<StandupMeeting>
+) => {
   const syncedStateStore = useSignal<SyncedStore>();
   useClientEffect$(({ track }) => {
     track(() => standupState.allDone);
-    track(() => standupState.orderPosition);
+    track(() => standupState.currentlyUpdating);
     track(() => standupState.people);
     // If the only thing we have is the ID, we want to connect without setting any state.
-    if (standupState.standupId && standupState.people === undefined) {
+    if (standupState.seriesId && standupState.people === undefined) {
       const { store } = connectToExistingStandup({
-        standupId: standupState.standupId,
+        standupId: standupState.seriesId,
       });
       syncedStateStore.value = noSerialize(store);
       return;
@@ -124,7 +112,7 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
       // Possibly undefined on first init, or when discarded because it's not serialized
       syncedStateStore.value &&
       // If the ID changes, we're changing sessions and want the state to start over
-      syncedStateStore.value.standupState.standupId === standupState.standupId
+      syncedStateStore.value.standupState.standupId === standupState.seriesId
     ) {
       // update existing
       if (
@@ -134,10 +122,10 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
       }
       if (
         syncedStateStore.value.standupState.orderPosition !==
-        standupState.orderPosition
+        standupState.currentlyUpdating
       ) {
         syncedStateStore.value.standupState.orderPosition =
-          standupState.orderPosition;
+          standupState.currentlyUpdating;
       }
       const storedCompleteItems = syncedStateStore.value.completeItems;
       const newCompleted = completeItems.filter(
@@ -151,10 +139,10 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
     } else {
       // store could be set to undefined at any time because it's not serialized. Recover
       const { store } = getSyncedStandupStore({
-        orderPosition: standupState.orderPosition,
+        orderPosition: standupState.currentlyUpdating,
         allDone: standupState.allDone,
         completeItems,
-        standupId: standupState.standupId!,
+        standupId: standupState.seriesId!,
         people:
           standupState.people?.map((p) => ({
             id: p.id,
@@ -169,7 +157,7 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
     track(() => syncedStateStore.value);
     if (syncedStateStore.value !== undefined) {
       standupState.allDone = syncedStateStore.value.standupState.allDone;
-      standupState.orderPosition =
+      standupState.currentlyUpdating =
         syncedStateStore.value.standupState.orderPosition;
       standupState.people =
         syncedStateStore.value.standupState.people?.map<PersonState>(
@@ -186,7 +174,7 @@ export const useSyncedStandupState = (standupState: Partial<StandupState>) => {
         }
         if (mepEvent.keysChanged.has("orderPosition")) {
           console.debug("orderPosition change in synced store");
-          standupState.orderPosition =
+          standupState.currentlyUpdating =
             syncedStateStore.value?.standupState.orderPosition;
         }
         if (mepEvent.keysChanged.has("people")) {

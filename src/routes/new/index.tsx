@@ -6,14 +6,14 @@ import {
   useContext,
 } from "@builder.io/qwik";
 import { useNavigate } from "@builder.io/qwik-city";
-import { Person } from "~/shared/standup-state.types";
-import { standupParticipantsContext } from "~/shared/standup-participants.context";
+import { Person } from "~/shared/types";
+import { standupSeriesContext } from "~/shared/standup-participants.context";
 
 export default component$(() => {
   const participants = useSignal<Person[]>([]);
   const newPartic = useSignal<string>();
   const navigate = useNavigate();
-  const standupState = useContext(standupParticipantsContext);
+  const standupState = useContext(standupSeriesContext);
   const submitNewParticipant = $(() => {
     if (!newPartic.value) {
       return;
@@ -48,6 +48,17 @@ export default component$(() => {
         navigate.path = `/${semiRandomNumber}`;
       }}
     >
+      <div class="form-control self-start">
+        <label for="standup-title-input" class="label">
+          Title:
+        </label>
+        <input
+          placeholder="Standup 12/28/2022"
+          class="input input-bordered"
+          id="standup-title-input"
+          type="text"
+        />
+      </div>
       <ul class="participant-list">
         {participants.value.map((partic) => (
           <li key={partic.id}>{partic.name}</li>
@@ -79,6 +90,12 @@ export default component$(() => {
           Add Participant
         </button>
       </span>
+      <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-2">
+          <span class="label-text">Randomize Order On Start</span>
+          <input class="checkbox" type="checkbox" />
+        </label>
+      </div>
       <button class="btn self-start" type="submit">
         Create Standup
       </button>

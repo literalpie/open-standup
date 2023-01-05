@@ -2,17 +2,17 @@ import { component$, useContext, useStore } from "@builder.io/qwik";
 import { DocumentHead, useLocation } from "@builder.io/qwik-city";
 import { StandupComponent } from "~/components/standup-component/standup-component";
 import { useSyncedStandupState } from "~/hooks/useSyncedStandupState";
-import { Person, StandupState } from "~/shared/standup-state.types";
-import { standupParticipantsContext } from "../../shared/standup-participants.context";
+import { Person, StandupMeeting } from "~/shared/standup-state.types";
+import { standupSeriesContext } from "../../shared/standup-participants.context";
 
 export const makeInitialStandupState = (
   people: Person[],
   id: string
-): StandupState => {
+): StandupMeeting => {
   return {
     orderPosition: 0,
     allDone: false,
-    standupId: id,
+    seriesId: id,
     people: people.map((pers, index) => ({
       done: false,
       id: index,
@@ -23,20 +23,20 @@ export const makeInitialStandupState = (
 };
 
 export const isStandupState = (
-  standup: StandupState | { standupId: StandupState["standupId"] }
-): standup is StandupState => {
-  return (standup as StandupState).people !== undefined;
+  standup: StandupMeeting | { standupId: StandupMeeting["seriesId"] }
+): standup is StandupMeeting => {
+  return (standup as StandupMeeting).people !== undefined;
 };
 
 export default component$(() => {
   const location = useLocation();
-  const standupStates = useContext(standupParticipantsContext);
+  const standupStates = useContext(standupSeriesContext);
   const peopleForStandupId = standupStates[location.params.standupId];
   const matchingStandup:
-    | StandupState
-    | { standupId: StandupState["standupId"] } = peopleForStandupId
+    | StandupMeeting
+    | { standupId: StandupMeeting["seriesId"] } = peopleForStandupId
     ? makeInitialStandupState(peopleForStandupId, location.params.standupId)
-    : { standupId: location.params.standupId };
+    : { seriesId: location.params.standupId };
   const standupState = useStore(matchingStandup, { recursive: false });
   useSyncedStandupState(standupState);
 

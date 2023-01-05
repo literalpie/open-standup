@@ -1,9 +1,9 @@
 import { component$, $ } from "@builder.io/qwik";
 import { initialStandupState } from "~/routes";
-import { StandupState } from "~/shared/standup-state.types";
+import { StandupMeeting } from "~/shared/standup-state.types";
 import { PersonStatus } from "../person-status/person-status";
 
-export const StandupComponent = component$<{ standupState: StandupState }>(
+export const StandupComponent = component$<{ standupState: StandupMeeting }>(
   ({ standupState }) => {
     // calculates on every render, but okay because people will never be large
     const currentPerson = standupState.people?.find(

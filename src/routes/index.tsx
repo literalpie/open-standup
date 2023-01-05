@@ -2,7 +2,7 @@ import { component$, useStore } from "@builder.io/qwik";
 import { DocumentHead } from "@builder.io/qwik-city";
 import { StandupComponent } from "~/components/standup-component/standup-component";
 import { useSyncedStandupState } from "~/hooks/useSyncedStandupState";
-import { PersonState, StandupState } from "~/shared/standup-state.types";
+import { PersonState, StandupMeeting } from "~/shared/standup-state.types";
 
 export const makeInitialPeopleState = (names: string[]): PersonState[] =>
   names.map((name, index) => ({ done: false, name, order: index, id: index }));
@@ -18,11 +18,11 @@ const initialPeople = makeInitialPeopleState([
   "Zack",
 ]);
 
-export const initialStandupState: StandupState = {
+export const initialStandupState: StandupMeeting = {
   orderPosition: 0,
   people: initialPeople,
   allDone: false,
-  standupId: "literalpie-open-standup",
+  seriesId: "literalpie-open-standup",
 };
 export default component$(() => {
   const standupState = useStore(initialStandupState, { recursive: false });
