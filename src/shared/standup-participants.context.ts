@@ -1,6 +1,5 @@
 import { createContext } from "@builder.io/qwik";
-import { Person } from "./standup-state.types";
+import { StandupSeries } from "./types";
 
-/** keeps a map of each known standup, and the participants that are part of that standup. */
-export const standupParticipantsContext =
-  createContext<Record<string, Person[]>>("standup-state");
+/** Context containing the state of the currently selected series */
+export const seriesContext = createContext<StandupSeries>("series-state");

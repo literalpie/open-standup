@@ -2,12 +2,12 @@ import { component$, useStore } from "@builder.io/qwik";
 import { DocumentHead } from "@builder.io/qwik-city";
 import { StandupComponent } from "~/components/standup-component/standup-component";
 import { useSyncedStandupState } from "~/hooks/useSyncedStandupState";
-import { PersonState, StandupState } from "~/shared/standup-state.types";
+import { Person, StandupSeries } from "~/shared/types";
 
-export const makeInitialPeopleState = (names: string[]): PersonState[] =>
-  names.map((name, index) => ({ done: false, name, order: index, id: index }));
+export const makeInitialPeopleState = (names: string[]): Person[] =>
+  names.map((name, index) => ({ name, order: index, id: String(index) }));
 
-const initialPeople = makeInitialPeopleState([
+export const initialPeople = makeInitialPeopleState([
   "Ben",
   "Chaz",
   "Jason",
@@ -18,18 +18,12 @@ const initialPeople = makeInitialPeopleState([
   "Zack",
 ]);
 
-export const initialStandupState: StandupState = {
-  orderPosition: 0,
-  people: initialPeople,
-  allDone: false,
-  standupId: "literalpie-open-standup",
-};
 export default component$(() => {
-  const standupState = useStore(initialStandupState, { recursive: false });
-  useSyncedStandupState(standupState);
+  const seriesState = useStore<StandupSeries>({id: '0', people:initialPeople, randomizeOnStart: false, title: 'Demo'});
+  const standupState = useSyncedStandupState(seriesState);
   return (
     <div>
-      <StandupComponent standupState={standupState} />
+      <StandupComponent seriesState={seriesState} standupState={standupState} />
     </div>
   );
 });

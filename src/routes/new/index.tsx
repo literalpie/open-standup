@@ -3,25 +3,31 @@ import {
   useSignal,
   $,
   useClientEffect$,
-  useContext,
+  useStore,
 } from "@builder.io/qwik";
+import { StandupSeries } from "~/shared/types";
+import { useSyncedSeriesState } from "~/hooks/useSyncedSeriesState";
 import { useNavigate } from "@builder.io/qwik-city";
-import { Person } from "~/shared/standup-state.types";
-import { standupParticipantsContext } from "~/shared/standup-participants.context";
 
 export default component$(() => {
-  const participants = useSignal<Person[]>([]);
+  const semiRandomId = String(new Date().getTime());
+  const seriesState = useSyncedSeriesState(semiRandomId);
+  const editingState = useStore<StandupSeries>({
+    id: semiRandomId,
+    people: [],
+    randomizeOnStart: false,
+    title: ''
+  })
   const newPartic = useSignal<string>();
   const navigate = useNavigate();
-  const standupState = useContext(standupParticipantsContext);
   const submitNewParticipant = $(() => {
     if (!newPartic.value) {
       return;
     }
-    participants.value.push({
+    editingState.people.push({
       name: newPartic.value,
-      id: participants.value.length,
-      order: participants.value.length,
+      id: String(editingState.people.length),
+      order: editingState.people.length,
     });
     newPartic.value = undefined;
   });
@@ -43,13 +49,30 @@ export default component$(() => {
       class="flex flex-col gap-2"
       preventdefault:submit
       onSubmit$={() => {
-        const semiRandomNumber = new Date().getTime();
-        standupState[semiRandomNumber] = participants.value;
-        navigate.path = `/${semiRandomNumber}`;
+        seriesState.id = editingState.id;
+        seriesState.people = editingState.people;
+        seriesState.randomizeOnStart = editingState.randomizeOnStart;
+        seriesState.title = editingState.title;
+        navigate.path = `/${seriesState.id}`;
       }}
     >
+      <div class="form-control self-start">
+        <label for="standup-title-input" class="label">
+          Title:
+        </label>
+        <input
+          value={editingState.title}
+          placeholder="Standup 12/28/2022"
+          class="input input-bordered"
+          id="standup-title-input"
+          onChange$={(changeEv) => {
+            editingState.title = changeEv.target.value;
+          }}
+          type="text"
+        />
+      </div>
       <ul class="participant-list">
-        {participants.value.map((partic) => (
+        {editingState.people.map((partic) => (
           <li key={partic.id}>{partic.name}</li>
         ))}
         {newPartic.value?.length ? (
@@ -79,6 +102,14 @@ export default component$(() => {
           Add Participant
         </button>
       </span>
+      <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-2">
+          <span class="label-text">Randomize Order On Start</span>
+          <input class="checkbox" type="checkbox" checked={editingState.randomizeOnStart} onChange$={(changeEv)=>{
+            editingState.randomizeOnStart = changeEv.target.checked ?? false;
+          }} />
+        </label>
+      </div>
       <button class="btn self-start" type="submit">
         Create Standup
       </button>

@@ -1,49 +1,22 @@
-import { component$, useContext, useStore } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { DocumentHead, useLocation } from "@builder.io/qwik-city";
 import { StandupComponent } from "~/components/standup-component/standup-component";
+import { useSyncedSeriesState } from "~/hooks/useSyncedSeriesState";
 import { useSyncedStandupState } from "~/hooks/useSyncedStandupState";
-import { Person, StandupState } from "~/shared/standup-state.types";
-import { standupParticipantsContext } from "../../shared/standup-participants.context";
-
-export const makeInitialStandupState = (
-  people: Person[],
-  id: string
-): StandupState => {
-  return {
-    orderPosition: 0,
-    allDone: false,
-    standupId: id,
-    people: people.map((pers, index) => ({
-      done: false,
-      id: index,
-      name: pers.name,
-      order: index,
-    })),
-  };
-};
-
-export const isStandupState = (
-  standup: StandupState | { standupId: StandupState["standupId"] }
-): standup is StandupState => {
-  return (standup as StandupState).people !== undefined;
-};
 
 export default component$(() => {
   const location = useLocation();
-  const standupStates = useContext(standupParticipantsContext);
-  const peopleForStandupId = standupStates[location.params.standupId];
-  const matchingStandup:
-    | StandupState
-    | { standupId: StandupState["standupId"] } = peopleForStandupId
-    ? makeInitialStandupState(peopleForStandupId, location.params.standupId)
-    : { standupId: location.params.standupId };
-  const standupState = useStore(matchingStandup, { recursive: false });
-  useSyncedStandupState(standupState);
+  const seriesState = useSyncedSeriesState(location.params.standupId);
+  const standupState = useSyncedStandupState(seriesState);
 
   return (
     <>
-      {isStandupState(standupState) ? (
-        <StandupComponent standupState={standupState} />
+      {seriesState && seriesState.people.length > 0 ? (
+        <div>
+          title: {seriesState.title}
+          <StandupComponent seriesState={seriesState} standupState={standupState} />
+
+        </div>
       ) : (
         <div>Standup Not Found</div>
       )}

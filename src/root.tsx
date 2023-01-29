@@ -1,4 +1,4 @@
-import { component$, useContextProvider, useStyles$ } from "@builder.io/qwik";
+import { component$, useStyles$ } from "@builder.io/qwik";
 import {
   QwikCityProvider,
   RouterOutlet,
@@ -7,7 +7,6 @@ import {
 import { RouterHead } from "./components/router-head/router-head";
 
 import globalStyles from "./global.css?inline";
-import { standupParticipantsContext } from "./shared/standup-participants.context";
 
 export default component$(() => {
   /**
@@ -17,7 +16,6 @@ export default component$(() => {
    * Dont remove the `<head>` and `<body>` elements.
    */
   useStyles$(globalStyles);
-  useContextProvider(standupParticipantsContext, {});
 
   return (
     <QwikCityProvider>
