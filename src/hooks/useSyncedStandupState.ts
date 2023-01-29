@@ -90,6 +90,7 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
   });
   useTask$(({ track }) => {
     track(() => standupState.updates);
+
     if (!syncedStateStore.value) {
       return;
     }
@@ -102,10 +103,13 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
         )
         .map((doneState) => doneState.id) ?? [];
 
-    if (
-      syncedStateStore.value.completeItems.length !==
-      standupState.updates.length
-    ) {
+    const completeItemsEqual =
+      completeItems.length === syncedStateStore.value.completeItems.length &&
+      syncedStateStore.value.completeItems.every((item) =>
+        completeItems.includes(item)
+      );
+
+    if (!completeItemsEqual) {
       syncedStateStore.value.completeItems.splice(
         0,
         syncedStateStore.value.completeItems.length,
