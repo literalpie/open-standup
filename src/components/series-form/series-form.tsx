@@ -7,6 +7,7 @@ import {
 } from "@builder.io/qwik";
 import { StandupSeries } from "~/shared/types";
 import { useNavigate } from "@builder.io/qwik-city";
+import { TrashIcon } from "../trash-icon";
 
 export const SeriesForm = component$<{
   series: StandupSeries;
@@ -23,9 +24,14 @@ export const SeriesForm = component$<{
     if (!newPartic.value) {
       return;
     }
+    const maxId =
+      editingState.people
+        .map((p) => +p.id)
+        .sort((id, id2) => id - id2)
+        .at(-1) ?? 0;
     editingState.people.push({
       name: newPartic.value,
-      id: String(editingState.people.length),
+      id: String(maxId + 1),
       order: editingState.people.length,
     });
     newPartic.value = undefined;
@@ -73,10 +79,33 @@ export const SeriesForm = component$<{
       </div>
       <ul class="participant-list">
         {editingState.people.map((partic) => (
-          <li key={partic.id}>{partic.name}</li>
+          <li
+            key={partic.id}
+            class="px-1 w-1/2 flex justify-between items-center"
+          >
+            <div>{partic.name}</div>
+            <button
+              onClick$={() => {
+                editingState.people = editingState.people.filter(
+                  (person) => person.id !== partic.id
+                );
+                // make sure there aren't gaps in the orders
+                editingState.people = editingState.people.map((p, index) => ({
+                  ...p,
+                  order: index,
+                }));
+              }}
+              type="button"
+              class="btn btn-xs btn-outline btn-ghost btn-circle border-hidden hover:bg-inherit"
+            >
+              <TrashIcon size={15} />
+            </button>
+          </li>
         ))}
         {newPartic.value?.length ? (
-          <li class="text-opacity-60 text-base-content">{newPartic.value}</li>
+          <li class="text-opacity-60 text-base-content px-1">
+            {newPartic.value}
+          </li>
         ) : null}
       </ul>
       <span class="flex gap-2 align">
