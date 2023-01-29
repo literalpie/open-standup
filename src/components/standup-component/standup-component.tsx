@@ -1,13 +1,15 @@
 import { component$, $ } from "@builder.io/qwik";
-import { initialStandupState } from "~/routes";
-import { StandupState } from "~/shared/standup-state.types";
+import { StandupSeries, StandupMeeting, Person } from "~/shared/types";
 import { PersonStatus } from "../person-status/person-status";
 
-export const StandupComponent = component$<{ standupState: StandupState }>(
-  ({ standupState }) => {
+export const hasPersonUpdated = ((person: Person, updates: StandupMeeting['updates'])=>{
+  return updates.some(update=>update.personId === person.id && update.done)
+})
+export const StandupComponent = component$<{ standupState: StandupMeeting; seriesState: StandupSeries }>(
+  ({ standupState, seriesState }) => {
     // calculates on every render, but okay because people will never be large
-    const currentPerson = standupState.people?.find(
-      (person) => person.order === standupState.orderPosition
+    const currentPerson = seriesState?.people?.find(
+      (person) => person.id === standupState.currentlyUpdating
     );
 
     const setNextOrderPosition = $(() => {
@@ -15,28 +17,27 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
         return;
       }
       const sortedPeople =
-        standupState.people?.sort((a, b) => a.order - b.order) ?? [];
+        seriesState.people?.sort((a, b) => a.order - b.order) ?? [];
+      const updatingIndex = sortedPeople.findIndex(person=>person.id === standupState.currentlyUpdating);
       const nextAfterCurrent = sortedPeople.find(
         (person, index) =>
-          standupState.orderPosition !== undefined &&
-          index > standupState.orderPosition &&
-          !person.done
+          index > updatingIndex && !hasPersonUpdated(person, standupState.updates)
       );
-      const firstNotDone = sortedPeople.find((person) => !person.done);
+      const firstNotDone = sortedPeople.find((person) => !hasPersonUpdated(person, standupState.updates));
       const nextOrderPosition = nextAfterCurrent?.order ?? firstNotDone?.order;
-      standupState.orderPosition = nextOrderPosition;
+      standupState.currentlyUpdating = (nextOrderPosition !== undefined && sortedPeople[nextOrderPosition].id) || undefined;
       standupState.allDone = nextOrderPosition === undefined;
     });
 
     return (
       <div>
-        {standupState.people?.map((person) => {
+        {seriesState?.people?.map((person) => {
           return (
             <PersonStatus
               key={person.name}
               name={person.name}
-              done={person.done}
-              current={person.order === standupState.orderPosition}
+              done={hasPersonUpdated(person, standupState.updates)}
+              current={person.id === standupState.currentlyUpdating}
             />
           );
         })}
@@ -47,13 +48,11 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
               <button
                 class="btn flex-grow"
                 onClick$={() => {
-                  standupState.allDone = initialStandupState.allDone;
-                  standupState.orderPosition =
-                    initialStandupState.orderPosition;
-                  standupState.people = standupState.people.map((person) => ({
-                    ...person,
-                    done: false,
-                  }));
+                  standupState.allDone = false;
+                  const sortedPeople = seriesState.people?.sort((a, b) => a.order - b.order) ?? [];
+          
+                  standupState.currentlyUpdating = sortedPeople[0].id;
+                  standupState.updates = [];
                 }}
               >
                 Reset
@@ -65,10 +64,7 @@ export const StandupComponent = component$<{ standupState: StandupState }>(
                 class="btn flex-grow"
                 onClick$={() => {
                   if (currentPerson) {
-                    standupState.people = standupState.people.map((person) => ({
-                      ...person,
-                      done: person.id === currentPerson.id ? true : person.done,
-                    }));
+                    standupState.updates = [...standupState.updates, {done: true, personId: currentPerson.id}];
                   }
                   setNextOrderPosition();
                 }}
