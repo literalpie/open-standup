@@ -62,7 +62,7 @@ export const SeriesForm = component$<{
         </label>
         <input
           value={editingState.title}
-          placeholder="Standup 12/28/2022"
+          placeholder="Name your standup"
           class="input input-bordered"
           id="standup-title-input"
           onChange$={(changeEv) => {
@@ -104,7 +104,6 @@ export const SeriesForm = component$<{
       </span>
       <div class="form-control">
         <label class="label cursor-pointer justify-start gap-2">
-          <span class="label-text">Randomize Order On Start</span>
           <input
             class="checkbox"
             type="checkbox"
@@ -113,6 +112,7 @@ export const SeriesForm = component$<{
               editingState.randomizeOnStart = changeEv.target.checked ?? false;
             }}
           />
+          <span class="label-text">Randomize Order On Start</span>
         </label>
       </div>
       <button class="btn self-start" type="submit">

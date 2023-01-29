@@ -8,7 +8,7 @@ An app to use during standups.
 
 Everyone who opens the app anywhere gets their state synced using p2p tech (no centralized server). That's kinda cool, right?
 
-This is just a very basic POC right now. The names are hard-coded, and there's only one instance.
+This is still a pretty basic POC, but some people may find it useful.
 
 ### How to use
 
@@ -20,11 +20,11 @@ Go to https://open-standup.vercel.app/new to create a new standup with a custom 
 
 I mostly made this app to play with Qwik, and I thought it would be cool to have an OSS standup app.
 
-I don't know if I want to go farther with it though. It would be cool to support writing updates with certain updates marked for discussion (that's how my team does standups), but including that would make security _much_ more important since engineering progress is confidential in many projects.
+You can look at the open GitHub issues to see what my rough plans are. I make no promises that these issues will all be done though!
+
+If we want to get serious, it would be cool to support writing updates with certain updates marked for discussion (that's how my team does standups), but including that would make security _much_ more important since engineering progress is confidential in many projects. It is possible to add a password to the webrtc communication. It may be worth trying to use that, but information is also stored locally, so something would need to be done about that too.
 
 Cool integrations with Slack and stuff would also require some centralized server, again increasing the security burden.
-
-Also, the P2P stuff is less practical once you realize that the state is lost as soon as everyone closes the window. Maybe it could be stored to each person's storage or have an export option, but
 
 ## Tech
 
