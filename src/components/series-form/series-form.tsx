@@ -81,10 +81,11 @@ export const SeriesForm = component$<{
         {editingState.people.map((partic) => (
           <li
             key={partic.id}
-            class="px-1 w-1/2 flex justify-between items-center"
+            class="p-1 w-1/2 flex justify-between items-center"
           >
             <div>{partic.name}</div>
             <button
+              aria-label="Remove participant"
               onClick$={() => {
                 editingState.people = editingState.people.filter(
                   (person) => person.id !== partic.id
@@ -96,14 +97,14 @@ export const SeriesForm = component$<{
                 }));
               }}
               type="button"
-              class="btn btn-xs btn-outline btn-ghost btn-circle border-hidden hover:bg-inherit"
+              class="btn btn-xs btn-outline btn-ghost btn-circle border-hidden hover:bg-inherit hover:text-inherit stroke-base-content fill-base-content text-lg font-light"
             >
-              <TrashIcon size={15} />
+              X
             </button>
           </li>
         ))}
         {newPartic.value?.length ? (
-          <li class="text-opacity-60 text-base-content px-1">
+          <li class="text-opacity-60 text-base-content p-1">
             {newPartic.value}
           </li>
         ) : null}
