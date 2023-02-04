@@ -16,6 +16,8 @@ export interface StandupSeries {
 export interface StandupMeeting {
   /** The ID of the person currently updating. May be undefined if standup is complete */
   currentlyUpdating?: string;
+  /** Each participantID, in the order for this standup meeting. */
+  order: string[];
   updates: { personId: string; done: boolean /** updateTime: number */ }[];
   allDone: boolean;
   seriesId: string;

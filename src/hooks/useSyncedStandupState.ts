@@ -18,6 +18,8 @@ type SyncedStandupState = Partial<
 type SyncedStore = {
   standupState: SyncedStandupState;
   completeItems: string[];
+  /** The personID of each participant, in the order for this meeting. */
+  order: string[];
 };
 
 export const makeStandupRoomName = (id: string) => {
@@ -28,9 +30,11 @@ export const connectToStandupStore = ({ standupId }: { standupId: string }) => {
   const store = syncedStore<{
     standupState: SyncedStandupState;
     completeItems: string[];
+    order: string[];
   }>({
     standupState: {} as SyncedStandupState,
     completeItems: [],
+    order: [],
   });
   const doc = getYjsDoc(store);
   new IndexeddbPersistence(makeStandupRoomName(standupId), doc);
@@ -39,20 +43,22 @@ export const connectToStandupStore = ({ standupId }: { standupId: string }) => {
 };
 
 export const peopleStateFromPeople =
-  (completeItems: string[]) => (p: Person) => ({
+  (completeItems: string[], order: string[]) => (p: Person) => ({
     done: completeItems.includes(p.id),
     id: p.id,
     name: p.name,
-    order: p.order,
+    order: order.indexOf(p.id),
   });
 
 export const useSyncedStandupState = (seriesState: StandupSeries) => {
+  console.log("series state", seriesState);
   const syncedStateStore = useSignal<SyncedStore>();
   const standupState = useStore<StandupMeeting>({
     allDone: false,
     seriesId: seriesState.id,
     updates: [],
     currentlyUpdating: undefined,
+    order: seriesState.people.map((p) => p.id),
   });
 
   useClientEffect$(({ track }) => {
@@ -88,6 +94,29 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
     }
     syncedStateStore.value.standupState.allDone = standupState.allDone;
   });
+  useTask$(({ track }) => {
+    track(() => standupState.order);
+    if (
+      !syncedStateStore.value ||
+      (syncedStateStore.value.order.length === standupState.order.length &&
+        syncedStateStore.value.order.every(
+          (personId, index) => standupState.order.at(index) === personId
+        ))
+    ) {
+      return;
+    }
+    syncedStateStore.value.order.splice(
+      0,
+      syncedStateStore.value.order.length,
+      ...standupState.order
+    );
+  });
+  // useTask$(({ track }) => {
+  //   track(() => seriesState.people);
+  //   if (seriesState.people.length !== standupState.order.length) {
+  //     standupState.order = seriesState.people.map((p) => p.id);
+  //   }
+  // });
   useTask$(({ track }) => {
     track(() => standupState.updates);
 
@@ -135,6 +164,14 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
         personId: completeId,
       })
     );
+    console.log(
+      "syned order",
+      syncedStateStore.value.order.length,
+      standupState.order
+    );
+    syncedStateStore.value.order.length > 0
+      ? (standupState.order = syncedStateStore.value.order.map((item) => item))
+      : void 0;
 
     const observeFunc = (
       mepEvent: YMapEvent<{ allDone: boolean; currentlyUpdating: string }>
@@ -165,12 +202,29 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
         }
       }
     );
+    const unobserverOrder = observeDeep(syncedStateStore.value.order, () => {
+      console.debug("order change in synced store");
+      if (!syncedStateStore.value) {
+        return;
+      }
+      const ordersEqual = syncedStateStore.value?.order.every(
+        (personId, index) => standupState.order.at(index) === personId
+      );
+      if (
+        ordersEqual !== undefined &&
+        !ordersEqual &&
+        syncedStateStore.value.order.length > 0
+      ) {
+        standupState.order = [...syncedStateStore.value.order];
+      }
+    });
     const yjs = getYjsDoc(syncedStateStore.value);
     // use y obeserve because syncedStore doesn't tell us which property changed
     yjs.get("standupState").observe(observeFunc);
     cleanup(() => {
       yjs.get("standupState").unobserve(observeFunc);
       unobserverCompleteItems();
+      unobserverOrder();
     });
   });
   return standupState;
