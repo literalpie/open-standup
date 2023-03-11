@@ -46,28 +46,26 @@ export const connectToStandupStore = ({ standupId }: { standupId: string }) => {
       "wss://y-webrtc-signaling-us.herokuapp.com",
     ],
     peerOpts: {
-      config: {
-        iceServers: [
-          {
-            urls: "stun:relay.metered.ca:80",
-          },
-          {
-            urls: "turn:relay.metered.ca:80",
-            username: "b434a60c85848cab21fc019c",
-            credential: "xac7VM5vmueUbz60",
-          },
-          {
-            urls: "turn:relay.metered.ca:443",
-            username: "b434a60c85848cab21fc019c",
-            credential: "xac7VM5vmueUbz60",
-          },
-          {
-            urls: "turn:relay.metered.ca:443?transport=tcp",
-            username: "b434a60c85848cab21fc019c",
-            credential: "xac7VM5vmueUbz60",
-          },
-        ],
-      },
+      iceServers: [
+        {
+          urls: "stun:relay.metered.ca:80",
+        },
+        {
+          urls: "turn:relay.metered.ca:80",
+          username: "b434a60c85848cab21fc019c",
+          credential: "xac7VM5vmueUbz60",
+        },
+        {
+          urls: "turn:relay.metered.ca:443",
+          username: "b434a60c85848cab21fc019c",
+          credential: "xac7VM5vmueUbz60",
+        },
+        {
+          urls: "turn:relay.metered.ca:443?transport=tcp",
+          username: "b434a60c85848cab21fc019c",
+          credential: "xac7VM5vmueUbz60",
+        },
+      ],
     },
   });
   return { store };
