@@ -5,6 +5,7 @@ import {
   useStore,
   useTask$,
 } from "@builder.io/qwik";
+import * as awarenessProtocol from "y-protocols/awareness.js";
 import { syncedStore, getYjsDoc, observeDeep } from "@syncedstore/core";
 import { WebrtcProvider } from "y-webrtc";
 import { IndexeddbPersistence } from "y-indexeddb";
@@ -34,7 +35,41 @@ export const connectToStandupStore = ({ standupId }: { standupId: string }) => {
   });
   const doc = getYjsDoc(store);
   new IndexeddbPersistence(makeStandupRoomName(standupId), doc);
-  new WebrtcProvider(makeStandupRoomName(standupId), doc);
+  new WebrtcProvider(makeStandupRoomName(standupId), doc, {
+    awareness: new awarenessProtocol.Awareness(doc),
+    filterBcConns: null,
+    maxConns: 20 + Math.floor(Math.random() * 15),
+    password: null,
+    signaling: [
+      "wss://signaling.yjs.dev",
+      "wss://y-webrtc-signaling-eu.herokuapp.com",
+      "wss://y-webrtc-signaling-us.herokuapp.com",
+    ],
+    peerOpts: {
+      config: {
+        iceServers: [
+          {
+            urls: "stun:relay.metered.ca:80",
+          },
+          {
+            urls: "turn:relay.metered.ca:80",
+            username: "b434a60c85848cab21fc019c",
+            credential: "xac7VM5vmueUbz60",
+          },
+          {
+            urls: "turn:relay.metered.ca:443",
+            username: "b434a60c85848cab21fc019c",
+            credential: "xac7VM5vmueUbz60",
+          },
+          {
+            urls: "turn:relay.metered.ca:443?transport=tcp",
+            username: "b434a60c85848cab21fc019c",
+            credential: "xac7VM5vmueUbz60",
+          },
+        ],
+      },
+    },
+  });
   return { store };
 };
 
