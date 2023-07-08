@@ -1,6 +1,6 @@
 import {
   noSerialize,
-  useClientEffect$,
+  useVisibleTask$,
   useContextProvider,
   useSignal,
   useStore,
@@ -66,7 +66,7 @@ export const useSyncedSeriesState = (seriesId: string) => {
     title: "",
   });
   useContextProvider(seriesContext, seriesState);
-  useClientEffect$(() => {
+  useVisibleTask$(() => {
     if (seriesId && syncedSeriesState.value === undefined) {
       const { store } = connectToSeriesStore({ seriesId });
       syncedSeriesState.value = noSerialize(store);

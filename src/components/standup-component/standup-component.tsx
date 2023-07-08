@@ -46,7 +46,7 @@ export const StandupComponent = component$<{ standupState: StandupMeeting; serie
             <>
               <div class="flex-grow">All Done!</div>
               <button
-                class="btn flex-grow"
+                class="btn btn-neutral flex-grow"
                 onClick$={() => {
                   standupState.allDone = false;
                   const sortedPeople = seriesState.people?.sort((a, b) => a.order - b.order) ?? [];
@@ -61,7 +61,7 @@ export const StandupComponent = component$<{ standupState: StandupMeeting; serie
           ) : (
             <>
               <button
-                class="btn flex-grow"
+                class="btn btn-neutral flex-grow"
                 onClick$={() => {
                   if (currentPerson) {
                     standupState.updates = [...standupState.updates, {done: true, personId: currentPerson.id}];

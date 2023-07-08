@@ -1,13 +1,12 @@
 import {
+  useVisibleTask$,
   component$,
   useSignal,
   $,
-  useClientEffect$,
   useStore,
-} from "@builder.io/qwik";
+} from '@builder.io/qwik';
 import { StandupSeries } from "~/shared/types";
 import { useNavigate } from "@builder.io/qwik-city";
-import { TrashIcon } from "../trash-icon";
 
 export const SeriesForm = component$<{
   series: StandupSeries;
@@ -38,7 +37,7 @@ export const SeriesForm = component$<{
   });
   // If enter is pressed in the new participant input,
   // add the participant to the list instead of submitting the form.
-  useClientEffect$(() => {
+  useVisibleTask$(() => {
     document
       .getElementById("new-participant-input")
       ?.addEventListener("keydown", (e) => {
@@ -59,7 +58,7 @@ export const SeriesForm = component$<{
         series.randomizeOnStart = editingState.randomizeOnStart;
         series.title = editingState.title;
         // move to parent component?
-        navigate.path = `/${series.id}`;
+        navigate(`/${series.id}`);
       }}
     >
       <div class="form-control self-start">
@@ -125,7 +124,7 @@ export const SeriesForm = component$<{
           />
         </div>
         <button
-          class="btn self-end"
+          class="btn btn-neutral self-end"
           type="button"
           onClick$={submitNewParticipant}
         >

@@ -1,6 +1,6 @@
 import {
   noSerialize,
-  useClientEffect$,
+  useVisibleTask$,
   useSignal,
   useStore,
   useTask$,
@@ -55,7 +55,7 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
     currentlyUpdating: undefined,
   });
 
-  useClientEffect$(({ track }) => {
+  useVisibleTask$(({ track }) => {
     track(() => standupState.seriesId);
     if (standupState.seriesId) {
       const { store } = connectToStandupStore({

@@ -1,5 +1,5 @@
-import { createContext } from "@builder.io/qwik";
+import { createContextId } from "@builder.io/qwik";
 import { StandupSeries } from "./types";
 
 /** Context containing the state of the currently selected series */
-export const seriesContext = createContext<StandupSeries>("series-state");
+export const seriesContext = createContextId<StandupSeries>("series-state");

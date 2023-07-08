@@ -35,7 +35,7 @@ export default component$(() => {
       </p>
       <p class="py-1">Play with the demo below, or make your own meeting</p>
       <div class="flex justify-center py-1">
-        <Link href="/new" class="btn w-1/2">
+        <Link href="/new" class="btn btn-neutral w-1/2">
           Create new standup
         </Link>
       </div>
