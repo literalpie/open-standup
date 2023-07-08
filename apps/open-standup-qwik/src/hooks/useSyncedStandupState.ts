@@ -98,22 +98,22 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
       seriesState.people
         .filter((doneState) =>
           standupState.updates.some(
-            (update) => update.personId === doneState.id && update.done
-          )
+            (update) => update.personId === doneState.id && update.done,
+          ),
         )
         .map((doneState) => doneState.id) ?? [];
 
     const completeItemsEqual =
       completeItems.length === syncedStateStore.value.completeItems.length &&
       syncedStateStore.value.completeItems.every((item) =>
-        completeItems.includes(item)
+        completeItems.includes(item),
       );
 
     if (!completeItemsEqual) {
       syncedStateStore.value.completeItems.splice(
         0,
         syncedStateStore.value.completeItems.length,
-        ...completeItems
+        ...completeItems,
       );
     }
   });
@@ -133,11 +133,11 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
       (completeId) => ({
         done: true,
         personId: completeId,
-      })
+      }),
     );
 
     const observeFunc = (
-      mepEvent: YMapEvent<{ allDone: boolean; currentlyUpdating: string }>
+      mepEvent: YMapEvent<{ allDone: boolean; currentlyUpdating: string }>,
     ) => {
       console.debug("changed keys", mepEvent.keysChanged);
       if (mepEvent.keysChanged.has("allDone")) {
@@ -163,7 +163,7 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
         if (newUpdates.length !== standupState.updates.length) {
           standupState.updates = newUpdates;
         }
-      }
+      },
     );
     const yjs = getYjsDoc(syncedStateStore.value);
     // use y obeserve because syncedStore doesn't tell us which property changed

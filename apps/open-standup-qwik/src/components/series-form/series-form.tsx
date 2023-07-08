@@ -4,7 +4,7 @@ import {
   useSignal,
   $,
   useStore,
-} from '@builder.io/qwik';
+} from "@builder.io/qwik";
 import { StandupSeries } from "~/shared/types";
 import { useNavigate } from "@builder.io/qwik-city";
 
@@ -87,7 +87,7 @@ export const SeriesForm = component$<{
               aria-label="Remove participant"
               onClick$={() => {
                 editingState.people = editingState.people.filter(
-                  (person) => person.id !== partic.id
+                  (person) => person.id !== partic.id,
                 );
                 // make sure there aren't gaps in the orders
                 editingState.people = editingState.people.map((p, index) => ({

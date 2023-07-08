@@ -53,8 +53,8 @@ export const allPeopleEqual = (people1: Person[], people2: Person[]) =>
       (person2) =>
         person2.id === person.id &&
         person2.name === person.name &&
-        person2.order === person.order
-    )
+        person2.order === person.order,
+    ),
   );
 
 export const useSyncedSeriesState = (seriesId: string) => {
@@ -99,7 +99,7 @@ export const useSyncedSeriesState = (seriesId: string) => {
     syncedSeriesState.value.people?.splice(
       0,
       syncedSeriesState.value.people.length,
-      ...seriesState.people
+      ...seriesState.people,
     );
   });
 
@@ -127,7 +127,7 @@ export const useSyncedSeriesState = (seriesId: string) => {
             syncedState.randomizeOnStart ?? seriesState.randomizeOnStart;
           seriesState.title = syncedState.title ?? seriesState.title;
         }
-      }
+      },
     );
     const observePeopleCleanup = observeDeep(
       syncedSeriesState.value.people,
@@ -138,7 +138,7 @@ export const useSyncedSeriesState = (seriesId: string) => {
             syncedPeople.map((person) => ({ ...person })) ??
             seriesState.people.map((person) => ({ ...person }));
         }
-      }
+      },
     );
     // use y obeserve because syncedStore doesn't tell us which property changed
     cleanup(() => {
