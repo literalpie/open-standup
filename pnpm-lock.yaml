@@ -43,11 +43,11 @@ importers:
         version: 13.6.6
     devDependencies:
       '@builder.io/qwik':
-        specifier: ^1.2.6
-        version: 1.2.6(undici@5.22.1)
+        specifier: ~1.2.0
+        version: 1.2.0(undici@5.22.1)
       '@builder.io/qwik-city':
-        specifier: ^1.2.6
-        version: 1.2.6
+        specifier: ~1.2.0
+        version: 1.2.0
       '@supabase/supabase-js':
         specifier: ^2.26.0
         version: 2.26.0
@@ -1371,8 +1371,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@builder.io/qwik-city@1.2.6:
-    resolution: {integrity: sha512-/uo58NysxpdsiEwuuKo8HDM9UYYAofrniupor2v5vci3Dr6PTXcvKAFJ1Z+SdJGv2uxr5hvKsbVohnVYa9jxYg==}
+  /@builder.io/qwik-city@1.2.0:
+    resolution: {integrity: sha512-szbn/vus2GbBNJmaOECLvLQuaPScwPcuBGeZQ3Y1M+eK4YVkMAYdh/csqEEoGOSFO4UK2XMPzW5uYsfQ/GsXcA==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     dependencies:
       '@mdx-js/mdx': 2.3.0
@@ -1387,14 +1387,13 @@ packages:
       - supports-color
     dev: true
 
-  /@builder.io/qwik@1.2.6(undici@5.22.1):
-    resolution: {integrity: sha512-Cm1sLAimML55I5T1RI80R1lLgI4cnSeQt5obQtcMKa8wMmf2/luEyQaEkeN2fV3sp/gaVXCfAuKaddXK6ONdww==}
+  /@builder.io/qwik@1.2.0(undici@5.22.1):
+    resolution: {integrity: sha512-N4U3hjzlvaCef3DifpvZK5pe0721/EZa+9FGGHv2xyV/Q9ZYEZ1DkIOYhFzSWGHOAdigbYCTG8VUtnRLHNN6Yw==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     hasBin: true
     peerDependencies:
       undici: ^5.14.0
     dependencies:
-      csstype: 3.1.2
       undici: 5.22.1
     dev: true
 
