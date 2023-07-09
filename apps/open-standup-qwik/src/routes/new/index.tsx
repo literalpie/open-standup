@@ -1,14 +1,19 @@
 import { component$ } from "@builder.io/qwik";
-import { useSyncedSeriesState } from "~/hooks/useSyncedSeriesState";
+import { useNavigate } from "@builder.io/qwik-city";
 import { SeriesForm } from "~/components/series-form/series-form";
+import { useSaveStandupSeries } from "~/server-helpers/save-standup-series";
 
 export default component$(() => {
-  const semiRandomId = String(new Date().getTime());
-  const seriesState = useSyncedSeriesState(semiRandomId);
-
+  const submitSeries = useSaveStandupSeries();
+  const nav = useNavigate();
   return (
     <div>
-      <SeriesForm series={seriesState} />
+      <SeriesForm
+        onSubmit$={async (series) => {
+          const createdId = (await submitSeries.submit(series)).value;
+          nav(`/${createdId}`);
+        }}
+      />
     </div>
   );
 });

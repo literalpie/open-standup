@@ -53,6 +53,7 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
     seriesId: seriesState.id,
     updates: [],
     currentlyUpdating: undefined,
+    updateTime: new Date(), // p2p version doesn't use updateTime
   });
 
   useVisibleTask$(({ track }) => {

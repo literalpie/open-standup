@@ -19,4 +19,5 @@ export interface StandupMeeting {
   updates: { personId: string; done: boolean /** updateTime: number */ }[];
   allDone: boolean;
   seriesId: string;
+  updateTime: Date;
 }

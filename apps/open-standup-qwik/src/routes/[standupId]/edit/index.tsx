@@ -1,21 +1,26 @@
 import { component$ } from "@builder.io/qwik";
-import { useLocation } from "@builder.io/qwik-city";
+import { useNavigate } from "@builder.io/qwik-city";
 import { SeriesForm } from "~/components/series-form/series-form";
-import { useSyncedSeriesState } from "~/hooks/useSyncedSeriesState";
+import { useSaveStandupSeries } from "~/server-helpers/save-standup-series";
+
+import { useStandupSeries } from "..";
 
 export default component$(() => {
-  const location = useLocation();
-  const seriesState = useSyncedSeriesState(location.params.standupId);
+  const seriesState = useStandupSeries();
+  const submitSeries = useSaveStandupSeries();
+  const nav = useNavigate();
   return (
     <div>
-      {seriesState.title.length > 0 ? (
-        <SeriesForm series={seriesState} />
-      ) : (
-        <>
-          <div>Loading...</div>
-          <div>It's possible this standup does not exist.</div>
-        </>
-      )}
+      <SeriesForm
+        series={seriesState.value}
+        onSubmit$={async (series) => {
+          const newId = await submitSeries.submit({
+            ...series,
+            id: seriesState.value.id,
+          });
+          nav(`/${newId.value}`);
+        }}
+      />
     </div>
   );
 });

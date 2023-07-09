@@ -30,7 +30,11 @@
     "typescript": "5.1.6",
     "vercel": "^31.0.1",
     "vite": "~4.3.0",
-    "vite-tsconfig-paths": "4.2.0"
+    "vite-tsconfig-paths": "4.2.0",
+    "supabase-auth-helpers-qwik": "^0.0.3",
+    "supabase": "^1.75.3",
+    "@supabase/supabase-js": "^2.26.0"
+
   },
   "dependencies": {
     "@syncedstore/core": "^0.5.1",
