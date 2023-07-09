@@ -6,16 +6,31 @@
   },
   "private": true,
   "scripts": {
-    "lint": "eslint **/src/**/*.ts*",
-    "fmt": "prettier --write .",
-    "fmt.check": "prettier --check ."
+    "build": "qwik build",
+    "build.client": "vite build",
+    "build.preview": "vite build --ssr src/entry.preview.tsx",
+    "build.types": "tsc --incremental --noEmit",
+    "dev": "vite --mode dev",
+    "dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",
+    "preview": "qwik build preview && vite preview --open",
+    "start": "vite --open --mode ssr",
+    "qwik": "qwik"
   },
   "devDependencies": {
+    "@builder.io/qwik-city": "~1.2.6",
+    "@builder.io/qwik": "~1.2.6",
     "@types/eslint": "8.44.0",
+    "@types/node": "^20.4.1",
     "@typescript-eslint/eslint-plugin": "5.61.0",
     "@typescript-eslint/parser": "5.61.0",
+    "eslint-plugin-qwik": "1.2.6",
     "eslint": "8.44.0",
-    "eslint-plugin-qwik": "1.2.6"
+    "node-fetch": "3.3.1",
+    "prettier": "3.0.0",
+    "typescript": "5.1.6",
+    "vite-tsconfig-paths": "4.2.0",
+    "vite": "~4.3.0"
+
   },
   "dependencies": {}
 }
