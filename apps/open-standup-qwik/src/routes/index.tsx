@@ -1,14 +1,20 @@
-import { component$, useVisibleTask$ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import { Link, useNavigate } from "@builder.io/qwik-city";
+import { Link, routeLoader$ } from "@builder.io/qwik-city";
+
+export const useEnv = routeLoader$((a) => {
+  return a.env.get("PUBLIC_SUPABASE_URL");
+});
 
 export default component$(() => {
-  const nav = useNavigate();
-  useVisibleTask$(() => {
-    nav("/1");
-  });
+  const env = useEnv();
+  // const nav = useNavigate();
+  // useVisibleTask$(() => {
+  //   nav("/1");
+  // });
   return (
     <>
+      <div>env: {env.value}</div>
       This is the home page. See a demo standup meeting{" "}
       <Link href="/1" class="link">
         Here
