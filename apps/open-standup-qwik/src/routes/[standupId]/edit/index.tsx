@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { routeLoader$, useNavigate } from "@builder.io/qwik-city";
 import { SeriesForm } from "~/components/series-form/series-form";
 import { getSbClient } from "~/server-helpers/get-sb-client";
@@ -43,23 +43,38 @@ export default component$(() => {
   const seriesState = useStandupSeries();
   const submitSeries = useSaveStandupSeries();
   const nav = useNavigate();
+  const updatedId = useSignal<string | undefined>();
   return (
     <div>
-      <SeriesForm
-        series={seriesState.value}
-        onSubmit$={async (series) => {
-          const newId = await submitSeries.submit({
-            ...series,
-            id: seriesState.value.id,
-          });
-          console.log(
-            "created standup with id",
-            newId.value,
-            "but sometimes nav just doesnt do anything...",
-          );
-          nav(`/${newId.value}`);
-        }}
-      />
+      {updatedId.value !== undefined ? (
+        <>
+          <p>
+            The standup has been updated, but it doesn't always navigate right.
+          </p>
+          <a class="link" href={`/${updatedId.value}`}>
+            Click Here
+          </a>
+        </>
+      ) : (
+        <>
+          <SeriesForm
+            series={seriesState.value}
+            onSubmit$={async (series) => {
+              const newId = await submitSeries.submit({
+                ...series,
+                id: seriesState.value.id,
+              });
+              console.log(
+                "created standup with id",
+                newId.value,
+                "but sometimes nav just doesnt do anything...",
+              );
+              updatedId.value = newId.value as unknown as string;
+              nav(`/${newId.value}`);
+            }}
+          />
+        </>
+      )}
     </div>
   );
 });

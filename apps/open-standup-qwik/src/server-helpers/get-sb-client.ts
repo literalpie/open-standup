@@ -4,7 +4,6 @@ import { createServerClient } from "supabase-auth-helpers-qwik";
 import type { Database } from "~/shared/db-types";
 
 export const getSbClient = server$((context: RequestEventBase<unknown>) => {
-  console.log("get sb client ", import.meta.env.PUBLIC_SUPABASE_URL);
   return createServerClient<Database>(
     import.meta.env.PUBLIC_SUPABASE_URL,
     import.meta.env.PUBLIC_SUPABASE_ANON_KEY,

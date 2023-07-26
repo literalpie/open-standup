@@ -1,6 +1,6 @@
 import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import { Link, routeLoader$ } from "@builder.io/qwik-city";
+import { Link, routeLoader$, useNavigate } from "@builder.io/qwik-city";
 
 export const useEnv = routeLoader$((a) => {
   return a.env.get("PUBLIC_SUPABASE_URL");
@@ -8,10 +8,9 @@ export const useEnv = routeLoader$((a) => {
 
 export default component$(() => {
   const env = useEnv();
-  // const nav = useNavigate();
+  const nav = useNavigate();
   useVisibleTask$(() => {
-    console.log(import.meta.env);
-    // nav("/1");
+    nav("/1");
   });
   return (
     <>
