@@ -1,0 +1,46 @@
+{
+  "name": "open-standup-qwik",
+  "description": "App with Routing built-in (recommended)",
+  "engines": {
+    "node": "^18.0.0"
+  },
+  "private": true,
+  "scripts": {
+    "build": "qwik build",
+    "build.client": "vite build",
+    "build.preview": "vite build --ssr src/entry.preview.tsx",
+    "build.server": "vite build -c adapters/vercel-edge/vite.config.ts",
+    "build.types": "tsc --incremental --noEmit",
+    "dev": "vite --mode dev",
+    "dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",
+    "preview": "qwik build preview && vite preview --open",
+    "serve": "vercel deploy",
+    "start": "vite --open --mode ssr",
+    "qwik": "qwik"
+  },
+  "devDependencies": {
+    "@builder.io/qwik": "~1.2.6",
+    "@builder.io/qwik-city": "~1.2.6",
+    "@types/node": "^20.4.1",
+    "autoprefixer": "10.4.14",
+    "node-fetch": "3.3.1",
+    "postcss": "^8.4.25",
+    "prettier": "3.0.0",
+    "tailwindcss": "^3.3.2",
+    "typescript": "5.1.6",
+    "vercel": "^31.0.1",
+    "vite": "~4.3.0",
+    "vite-tsconfig-paths": "4.2.0",
+    "supabase-auth-helpers-qwik": "^0.0.3",
+    "supabase": "^1.75.3",
+    "@supabase/supabase-js": "^2.26.0"
+
+  },
+  "dependencies": {
+    "@syncedstore/core": "^0.5.1",
+    "daisyui": "^3.2.1",
+    "y-indexeddb": "^9.0.11",
+    "y-webrtc": "^10.2.5",
+    "yjs": "^13.6.6"
+  }
+}
