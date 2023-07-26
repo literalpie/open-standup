@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link, routeLoader$ } from "@builder.io/qwik-city";
 
@@ -9,9 +9,10 @@ export const useEnv = routeLoader$((a) => {
 export default component$(() => {
   const env = useEnv();
   // const nav = useNavigate();
-  // useVisibleTask$(() => {
-  //   nav("/1");
-  // });
+  useVisibleTask$(() => {
+    console.log(import.meta.env);
+    // nav("/1");
+  });
   return (
     <>
       <div>env: {env.value}</div>
