@@ -10,8 +10,10 @@ export default component$(() => {
     <div>
       <SeriesForm
         onSubmit$={async (series) => {
-          const createdId = (await submitSeries.submit(series)).value;
-          nav(`/${createdId}`);
+          const createdId = await submitSeries.submit(series);
+          if (createdId !== undefined) {
+            await nav(`/${createdId.value}`);
+          }
         }}
       />
     </div>

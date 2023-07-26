@@ -15,6 +15,7 @@ import type { StandupMeeting, StandupSeries } from "~/shared/types";
 import { getSbClient } from "~/server-helpers/get-sb-client";
 import { Introduction } from "~/components/introduction/introduction";
 
+// this is duplicated in the edit page
 export const useStandupSeries = routeLoader$<StandupSeries>(
   async (requestEventLoader) => {
     const standupId = requestEventLoader.params["standupId"];

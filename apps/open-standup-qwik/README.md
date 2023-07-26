@@ -38,3 +38,9 @@ This is built using:
 ### Deployments
 
 The latest version of this app is deployed to https://open-standup.vercel.app .
+
+## Supabase
+
+This uses Supabase. To run locally, make sure docker is running and `pnpx supabase start`. This will create a local version of the DB with some test data.
+
+When you run `pnpm run preview`, it will point at the real Supabase DB and do a production build of the app.

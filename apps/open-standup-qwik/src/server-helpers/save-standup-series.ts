@@ -36,7 +36,7 @@ export const useSaveStandupSeries = globalAction$(
     title: z.string(),
     randomizeOnStart: z.boolean(),
     people: z.array(
-      z.object({ name: z.string(), id: z.string(), order: z.number() })
+      z.object({ name: z.string(), id: z.string(), order: z.number() }),
     ),
-  })
+  }),
 );

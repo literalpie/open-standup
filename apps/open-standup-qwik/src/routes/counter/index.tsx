@@ -11,7 +11,8 @@ import { getSbClient } from "~/server-helpers/get-sb-client";
 
 export const getCounter = server$(async function () {
   const sbClient = await getSbClient(this);
-  return await sbClient.from("counter").select("*").single();
+  const res = await sbClient.from("counter").select("*").single();
+  return res;
 });
 
 export const useCountLoader = routeLoader$(async () => {

@@ -15,7 +15,7 @@ export const Introduction = component$(() => {
       </p>
       <p>Play with the demo below, or make your own meeting</p>
       <div class="flex justify-center py-1">
-        <Link href="/p2p/new" class="btn btn-neutral w-1/2">
+        <Link href={isP2P ? "/p2p/new" : "/new"} class="btn btn-neutral w-1/2">
           Create new standup
         </Link>
       </div>
