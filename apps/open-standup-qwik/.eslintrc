@@ -1,0 +1,6 @@
+{ 
+    "rules": {
+        "qwik/use-method-usage": ["error"],
+        "qwik/jsx-key": ["error"]
+    }
+}
