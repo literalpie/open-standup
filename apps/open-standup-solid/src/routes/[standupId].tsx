@@ -1,4 +1,9 @@
-import { createRouteData, useParams, useRouteData } from "solid-start";
+import {
+  createRouteAction,
+  createRouteData,
+  useParams,
+  useRouteData,
+} from "solid-start";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "~/shared/db-types";
 import { Person, StandupMeeting } from "~/shared/types";
@@ -12,7 +17,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
 
 export function routeData() {
   return createRouteData(async () => {
-    const params = useParams();
+    // const params = useParams();
+    const params = { standupId: 2 };
     const updatePeopleReq = supabase
       .from("updates")
       .select("*")
@@ -67,6 +73,68 @@ export function routeData() {
     return { seriesState, meetingState };
   });
 }
+
+export const advanceCurrentPerson = async function ({
+  finishUpdate,
+}: {
+  finishUpdate: boolean;
+}) {
+  // const params = useParams();
+  const params = { standupId: 2 };
+
+  const standupId = params["standupId"];
+
+  const sbClient = supabase;
+  const updates = await sbClient
+    .from("updates")
+    .select("*")
+    .eq("meeting_id", standupId);
+  if (updates.data?.every((up) => up.duration !== null)) {
+    return;
+  }
+  const sortedUpdates = [...(updates.data ?? [])]?.sort((a, b) => a.id - b.id);
+  const updatingIndex = sortedUpdates.findIndex(
+    (person) => person.started_at !== null && person.duration === null,
+  );
+  const updatingUpdate =
+    updatingIndex >= 0 ? sortedUpdates[updatingIndex] : undefined;
+  const nextAfterCurrent = sortedUpdates.find(
+    (person, index) => index > updatingIndex && person.duration === null,
+  );
+  const firstNotDone = sortedUpdates.find((person) => person.duration === null);
+  const nextUpdate = nextAfterCurrent ?? firstNotDone;
+  const updatedCurrentUpdate = updatingUpdate
+    ? [
+        {
+          started_at: null,
+          meeting_id: +standupId,
+          person_name: updatingUpdate.person_name,
+          id: updatingUpdate.id,
+          duration: finishUpdate
+            ? Date.now() - new Date(updatingUpdate.started_at!).getTime()
+            : undefined,
+        },
+      ]
+    : [];
+  const updatedNextUpdate =
+    nextUpdate && nextUpdate.id !== updatingUpdate?.id
+      ? [
+          {
+            id: nextUpdate.id,
+            meeting_id: +standupId,
+            person_name: nextUpdate.person_name,
+            started_at: new Date().toISOString(),
+          },
+        ]
+      : [];
+  const removeOldUpdating = sbClient
+    .from("updates")
+    .upsert([...updatedCurrentUpdate, ...updatedNextUpdate]);
+
+  await removeOldUpdating;
+  return true;
+};
+
 export const hasPersonUpdated = (
   person: Person,
   updates: StandupMeeting["updates"],
@@ -76,12 +144,43 @@ export const hasPersonUpdated = (
 export default function StandupMeetingComponent() {
   const params = useParams();
   const standupSeries = useRouteData<typeof routeData>();
+  const [_, { Form }] = createRouteAction(async (formData: FormData) => {
+    if (formData.get("Next") !== null) {
+      return advanceCurrentPerson({ finishUpdate: true });
+    }
+    if (formData.get("Skip") !== null) {
+      return advanceCurrentPerson({ finishUpdate: false });
+    }
+    if (formData.get("Reset") !== null) {
+      return supabase
+        .from("updates")
+        .update({ duration: null, started_at: null })
+        .eq("meeting_id", 2);
+    }
+  });
+
   return (
-    <div>
+    <div class="p-3">
       Standup {params.standupId} {standupSeries()?.seriesState.title}
-      <div>
+      <Form>
         {standupSeries()?.seriesState.people?.map((person) => {
-          return <div>{person.name}</div>;
+          const personDone = standupSeries()?.meetingState.updates.some(
+            (up) => up.personId === person.id && up.done,
+          );
+          return (
+            <div
+              class={
+                personDone
+                  ? "bg-slate-200"
+                  : person.id ===
+                    standupSeries()?.meetingState.currentlyUpdating
+                  ? "bg-slate-600"
+                  : ""
+              }
+            >
+              {person.name}
+            </div>
+          );
           // return (
           //   <PersonStatus
           //     key={person.name}
@@ -95,22 +194,22 @@ export default function StandupMeetingComponent() {
           {standupSeries()?.meetingState?.allDone ? (
             <>
               <div class="flex-grow">All Done!</div>
-              <button class="btn btn-neutral flex-grow" name="reset">
+              <button class="btn btn-neutral flex-grow" name="Reset">
                 Reset
               </button>
             </>
           ) : (
             <>
-              <button class="btn btn-neutral flex-grow" name="next">
+              <button class="btn btn-neutral flex-grow" name="Next">
                 Next
               </button>
-              <button class="btn flex-grow btn-outline" name="skip">
+              <button class="btn flex-grow btn-outline" name="Skip">
                 Skip
               </button>
             </>
           )}
         </div>
-      </div>
+      </Form>
     </div>
   );
 }
