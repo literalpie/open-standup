@@ -18,6 +18,7 @@ const supabaseAnonKey =
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: { persistSession: false },
 });
+console.log("url", supabaseUrl);
 
 export function routeData() {
   return createRouteData(async () => {
