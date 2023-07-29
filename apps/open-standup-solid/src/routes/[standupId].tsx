@@ -8,8 +8,12 @@ import { createClient } from "@supabase/supabase-js";
 import { Database } from "~/shared/db-types";
 import { Person, StandupMeeting } from "~/shared/types";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL ??
+  "https://tbxhyxckwpqjqadqsehu.supabase.co";
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ??
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRieGh5eGNrd3BxanFhZHFzZWh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODg0ODk4NDksImV4cCI6MjAwNDA2NTg0OX0.BN4nSodYgrBMqt1UWrSRAdPZc9-0j6-x6O_g2ectrAU";
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: { persistSession: false },
