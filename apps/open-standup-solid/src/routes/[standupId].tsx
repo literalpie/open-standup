@@ -1,103 +1,46 @@
-import {
-  createRouteAction,
-  createRouteData,
-  useParams,
-  useRouteData,
-} from "solid-start";
+import { createRouteAction, useParams } from "solid-start";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "~/shared/db-types";
 import { Person, StandupMeeting } from "~/shared/types";
+import {
+  QueryClient,
+  createQueries,
+  useQueryClient,
+} from "@tanstack/solid-query";
+import { For, Show, createMemo, onCleanup, onMount } from "solid-js";
+import PersonStatus from "~/components/PersonStatus";
 
-const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL ??
-  "https://tbxhyxckwpqjqadqsehu.supabase.co";
-const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ??
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRieGh5eGNrd3BxanFhZHFzZWh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODg0ODk4NDksImV4cCI6MjAwNDA2NTg0OX0.BN4nSodYgrBMqt1UWrSRAdPZc9-0j6-x6O_g2ectrAU";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+type StandupUpdate = Database["public"]["Tables"]["updates"]["Row"] & {
+  optimistic?: boolean;
+};
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: { persistSession: false },
 });
-console.log("url", supabaseUrl);
 
-export function routeData() {
-  return createRouteData(async () => {
-    // const params = useParams();
-    const params = { standupId: 2 };
-    const updatePeopleReq = supabase
-      .from("updates")
-      .select("*")
-      .eq("meeting_id", params.standupId)
-      .order("id", { ascending: true }) as unknown as {
-      data: { person_name: string; id: number; meeting_id: number }[];
-    };
-    const meetingsReq = supabase
-      .from("meetings")
-      .select("*")
-      .eq("id", params.standupId)
-      .single();
-    const [people, meetings] = await Promise.all([
-      updatePeopleReq,
-      meetingsReq,
-    ]);
-    const seriesState = {
-      id: params.standupId,
-      people:
-        people.data?.map((p) => ({
-          id: String(p.id),
-          name: p.person_name,
-          order: p.id,
-        })) ?? [],
-      randomizeOnStart: meetings.data?.randomize_order ?? false,
-      title: meetings.data?.title ?? "Unknown Title",
-    };
-
-    const updates = await supabase
-      .from("updates")
-      .select("*")
-      .eq("meeting_id", params.standupId)
-      .order("id", { ascending: true });
-    const updatedAt = updates.data?.reduce((soFar, newOne) => {
-      return new Date(newOne.updated_at).getTime() > soFar
-        ? new Date(newOne.updated_at).getTime()
-        : soFar;
-    }, 0);
-    const meetingState = {
-      allDone: updates.data?.every((update) => (update.duration ?? 0) > 0),
-      seriesId: "1",
-      updates: updates.data?.map((update) => ({
-        done: (update.duration ?? 0) > 0,
-        personId: String(update.id),
-      })),
-      updateTime: updatedAt !== undefined ? new Date(updatedAt) : new Date(),
-      currentlyUpdating: updates.data
-        ? String(updates.data?.find((update) => update.started_at !== null)?.id)
-        : undefined,
-    } as StandupMeeting;
-
-    return { seriesState, meetingState };
-  });
-}
-
-export const advanceCurrentPerson = async function ({
+const advanceCurrentPerson = async function ({
+  standupId,
   finishUpdate,
+  queryClient,
 }: {
   finishUpdate: boolean;
+  standupId: string;
+  queryClient: QueryClient;
 }) {
-  // const params = useParams();
-  const params = { standupId: 2 };
-
-  const standupId = params["standupId"];
-
   const sbClient = supabase;
-  const updates = await sbClient
-    .from("updates")
-    .select("*")
-    .eq("meeting_id", standupId);
-  if (updates.data?.every((up) => up.duration !== null)) {
+  // hopefully when this function is called, updates are already loaded
+  const updates = queryClient.getQueryData<{ data?: StandupUpdate[] }>([
+    "standup-series",
+    standupId,
+    "updates",
+  ]);
+  if (updates?.data?.every((up) => up.duration !== null)) {
     return;
   }
-  const sortedUpdates = [...(updates.data ?? [])]?.sort((a, b) => a.id - b.id);
+  const sortedUpdates = [...(updates?.data ?? [])]?.sort((a, b) => a.id - b.id);
   const updatingIndex = sortedUpdates.findIndex(
     (person) => person.started_at !== null && person.duration === null,
   );
@@ -117,7 +60,8 @@ export const advanceCurrentPerson = async function ({
           id: updatingUpdate.id,
           duration: finishUpdate
             ? Date.now() - new Date(updatingUpdate.started_at!).getTime()
-            : undefined,
+            : null,
+          updated_at: new Date().toISOString(),
         },
       ]
     : [];
@@ -129,15 +73,64 @@ export const advanceCurrentPerson = async function ({
             meeting_id: +standupId,
             person_name: nextUpdate.person_name,
             started_at: new Date().toISOString(),
+            duration: null,
+            updated_at: new Date().toISOString(),
           },
         ]
       : [];
-  const removeOldUpdating = sbClient
-    .from("updates")
-    .upsert([...updatedCurrentUpdate, ...updatedNextUpdate]);
+  if (updates?.data?.every((update) => !update.optimistic)) {
+    queryClient.setQueryData<{
+      data: StandupUpdate[];
+    }>(["standup-series", standupId, "updates"], (oldData) => {
+      return {
+        ...oldData,
+        data:
+          oldData?.data.map((d) => {
+            if (d.id === updatedCurrentUpdate[0]?.id) {
+              return { ...updatedCurrentUpdate[0], optimistic: true };
+            } else if (d.id === updatedNextUpdate[0]?.id) {
+              return { ...updatedNextUpdate[0], optimistic: true };
+            } else {
+              return d;
+            }
+          }) ?? [],
+      };
+    });
+    const removeOldUpdating = sbClient
+      .from("updates")
+      .upsert([...updatedCurrentUpdate, ...updatedNextUpdate]);
 
-  await removeOldUpdating;
+    await removeOldUpdating;
+  }
   return true;
+};
+
+const resetStandup = async function ({
+  queryClient,
+  standupId,
+}: {
+  queryClient: QueryClient;
+  standupId: string;
+}) {
+  // optimisitic update in solid-query
+  queryClient.setQueryData<{
+    data: StandupUpdate[];
+  }>(["standup-series", standupId, "updates"], (oldData) => {
+    return {
+      ...oldData,
+      data:
+        oldData?.data.map((d) => {
+          return { ...d, duration: null, started_at: null };
+        }) ?? [],
+    };
+  });
+  // actual update in supabase
+  const result = await supabase
+    .from("updates")
+    .update({ duration: null, started_at: null })
+    .eq("meeting_id", standupId);
+
+  return result;
 };
 
 export const hasPersonUpdated = (
@@ -146,57 +139,172 @@ export const hasPersonUpdated = (
 ) => {
   return updates.some((update) => update.personId === person.id && update.done);
 };
+
+/** fetches necessary data for a standup state and subscribes to updates */
+function useStandupState(standupId: string) {
+  const queryClient = useQueryClient();
+  const queries = createQueries(() => ({
+    queries: [
+      {
+        queryKey: ["standup-series", standupId, "updates"],
+        queryFn: async () => {
+          return await supabase
+            .from("updates")
+            .select("*")
+            .eq("meeting_id", standupId)
+            .order("id", { ascending: true });
+        },
+      },
+      {
+        queryKey: ["standup-series", standupId, "meeting"],
+        queryFn: async () => {
+          return await supabase
+            .from("meetings")
+            .select("*")
+            .eq("id", standupId)
+            .single();
+        },
+      },
+    ],
+  }));
+  // subscribe to supabase changes and update the queryClient
+  onMount(() => {
+    const sub = supabase
+      .channel("updates")
+      .on<StandupUpdate>(
+        "postgres_changes",
+        { schema: "public", event: "UPDATE", table: "updates" },
+        (supaChange) => {
+          const updatedMeeting = String(supaChange.new.meeting_id);
+          queryClient.setQueryData<{
+            data: StandupUpdate[];
+          }>(["standup-series", updatedMeeting, "updates"], (oldData) => {
+            return {
+              ...oldData,
+              data:
+                oldData?.data.map((d) => {
+                  if (d.id === supaChange.new.id) {
+                    return supaChange.new;
+                  } else {
+                    return d;
+                  }
+                }) ?? [],
+            };
+          });
+        },
+      )
+      .subscribe();
+    onCleanup(() => {
+      sub.unsubscribe();
+    });
+  });
+  const isLoading = createMemo(() =>
+    queries.some((q) => q.isLoading || q.isFetching),
+  );
+  const isError = createMemo(() => queries.some((q) => q.isError));
+  const updates = () => queries[0].data?.data;
+  const fetchedSeries = () => queries[1].data?.data;
+  const seriesState = createMemo(() => {
+    return {
+      id: standupId,
+      people:
+        updates()?.map((p) => ({
+          id: String(p.id),
+          name: p.person_name,
+          order: p.id,
+        })) ?? [],
+      randomizeOnStart: fetchedSeries()?.randomize_order ?? false,
+      title: fetchedSeries()?.title ?? "Unknown Title",
+    };
+  });
+  const meetingState = createMemo(() => {
+    const updatedAt = updates()?.reduce((soFar, newOne) => {
+      return new Date(newOne.updated_at).getTime() > soFar
+        ? new Date(newOne.updated_at).getTime()
+        : soFar;
+    }, 0);
+    const currentUpdate: () => StandupUpdate | undefined = () =>
+      updates()?.find((update) => update.started_at !== null);
+    return {
+      allDone: updates()?.every((update) => (update.duration ?? 0) > 0),
+      seriesId: standupId,
+      updates: updates()?.map((update: StandupUpdate) => ({
+        done: (update.duration ?? 0) > 0,
+        personId: String(update.id),
+        optimistic: update.optimistic,
+      })),
+      updateTime: updatedAt !== undefined ? new Date(updatedAt) : new Date(),
+      currentlyUpdating: updates() ? String(currentUpdate()?.id) : undefined,
+      currentOptimistic: currentUpdate()?.optimistic,
+    } as StandupMeeting;
+  });
+  return { isLoading, isError, seriesState, meetingState };
+}
 export default function StandupMeetingComponent() {
   const params = useParams();
-  const standupSeries = useRouteData<typeof routeData>();
+  const queryClient = useQueryClient();
+  const seriesQuery = useStandupState(params.standupId);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, { Form }] = createRouteAction(async (formData: FormData) => {
     if (formData.get("Next") !== null) {
-      return advanceCurrentPerson({ finishUpdate: true });
+      const result = await advanceCurrentPerson({
+        finishUpdate: true,
+        standupId: params.standupId,
+        queryClient,
+      });
+      return result;
     }
     if (formData.get("Skip") !== null) {
-      return advanceCurrentPerson({ finishUpdate: false });
+      const result = await advanceCurrentPerson({
+        finishUpdate: false,
+        standupId: params.standupId,
+        queryClient,
+      });
+      return result;
     }
     if (formData.get("Reset") !== null) {
-      return supabase
-        .from("updates")
-        .update({ duration: null, started_at: null })
-        .eq("meeting_id", 2);
+      resetStandup({ queryClient, standupId: params.standupId });
     }
+  });
+  const people = createMemo(() => {
+    return seriesQuery?.seriesState().people.map((p) => {
+      const thisPersonUpdate = seriesQuery
+        ?.meetingState()
+        ?.updates?.find((update) => update.personId === p.id && update.done);
+      const current = p.id === seriesQuery?.meetingState().currentlyUpdating;
+      return {
+        updated: thisPersonUpdate !== undefined,
+        current,
+        optimistic:
+          thisPersonUpdate?.optimistic ||
+          (current && seriesQuery.meetingState().currentOptimistic),
+        ...p,
+      };
+    });
   });
 
   return (
     <div class="p-3">
-      Standup {params.standupId} {standupSeries()?.seriesState.title}
+      <Show when={seriesQuery?.isLoading()}>
+        <div>Loading...</div>
+      </Show>
+      <h2 class="text-lg">{seriesQuery?.seriesState().title}</h2>
+      ID: {params.standupId}
       <Form>
-        {standupSeries()?.seriesState.people?.map((person) => {
-          const personDone = standupSeries()?.meetingState.updates.some(
-            (up) => up.personId === person.id && up.done,
-          );
-          return (
-            <div
-              class={
-                personDone
-                  ? "bg-slate-200"
-                  : person.id ===
-                    standupSeries()?.meetingState.currentlyUpdating
-                  ? "bg-slate-600"
-                  : ""
-              }
-            >
-              {person.name}
-            </div>
-          );
-          // return (
-          //   <PersonStatus
-          //     key={person.name}
-          //     name={person.name}
-          //     done={hasPersonUpdated(person, standupState.updates)}
-          //     current={person.id === standupState.currentlyUpdating}
-          //   />
-          // );
-        })}
+        <For each={people()}>
+          {(person) => {
+            return (
+              <PersonStatus
+                name={person.name}
+                done={person.updated}
+                current={person.current}
+                optimistic={person.optimistic}
+              />
+            );
+          }}
+        </For>
         <div class="pt-3 flex gap-1">
-          {standupSeries()?.meetingState?.allDone ? (
+          {seriesQuery?.meetingState().allDone ? (
             <>
               <div class="flex-grow">All Done!</div>
               <button class="btn btn-neutral flex-grow" name="Reset">

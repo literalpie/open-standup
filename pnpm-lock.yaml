@@ -101,6 +101,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.26.0
         version: 2.26.0
+      '@tanstack/solid-query':
+        specifier: 5.0.0-beta.15
+        version: 5.0.0-beta.15(solid-js@1.7.8)
       daisyui:
         specifier: ^3.2.1
         version: 3.2.1
@@ -2393,6 +2396,19 @@ packages:
     dependencies:
       defer-to-connect: 2.0.1
     dev: true
+
+  /@tanstack/query-core@5.0.0-beta.15:
+    resolution: {integrity: sha512-NaL5qp1K5IhnDD5wEegYpXB0OMPsb+QZNcGR5hWQaDS+30Ga8+zKpfjDn7wHlCKPO2mHCTRqUbQnLWIlt5FKoQ==}
+    dev: false
+
+  /@tanstack/solid-query@5.0.0-beta.15(solid-js@1.7.8):
+    resolution: {integrity: sha512-kH5g33F1GDQHDl5YKwcBA8YykdrY9SsYSl/jH/26GCs/BPfKSPUMjChUkbX+H2HmdLGFrlk/HTgmK7j+pvg0mQ==}
+    peerDependencies:
+      solid-js: ^1.6.0
+    dependencies:
+      '@tanstack/query-core': 5.0.0-beta.15
+      solid-js: 1.7.8
+    dev: false
 
   /@tootallnate/once@1.1.2:
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}

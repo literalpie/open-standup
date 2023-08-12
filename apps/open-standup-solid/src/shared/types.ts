@@ -16,7 +16,13 @@ export interface StandupSeries {
 export interface StandupMeeting {
   /** The ID of the person currently updating. May be undefined if standup is complete */
   currentlyUpdating?: string;
-  updates: { personId: string; done: boolean /** updateTime: number */ }[];
+  /** if the currentlyUpdating value is based on an optimistic update */
+  currentOptimistic: boolean;
+  updates: {
+    personId: string;
+    done: boolean;
+    optimistic?: boolean /** updateTime: number */;
+  }[];
   allDone: boolean;
   seriesId: string;
   updateTime: Date;
