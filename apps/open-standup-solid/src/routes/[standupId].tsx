@@ -204,20 +204,40 @@ function useStandupState(standupId: string) {
   const isError = createMemo(() => queries.some((q) => q.isError));
   const updates = () => queries[0].data?.data;
   const fetchedSeries = () => queries[1].data?.data;
-  const seriesState = createMemo(() => {
-    return {
-      id: standupId,
-      people:
-        updates()?.map((p) => ({
-          id: String(p.id),
-          name: p.person_name,
-          order: p.id,
-        })) ?? [],
-      randomizeOnStart: fetchedSeries()?.randomize_order ?? false,
-      title: fetchedSeries()?.title ?? "Unknown Title",
-    };
-  });
-  const meetingState = createMemo(() => {
+  const seriesState = createMemo(
+    () => {
+      return {
+        id: standupId,
+        people:
+          updates()?.map((p) => ({
+            id: String(p.id),
+            name: p.person_name,
+            order: p.id,
+          })) ?? [],
+        randomizeOnStart: fetchedSeries()?.randomize_order ?? false,
+        title: fetchedSeries()?.title ?? "Unknown Title",
+      };
+    },
+    undefined,
+    {
+      equals: (a, b) => {
+        return (
+          a.id === b.id &&
+          a.randomizeOnStart === b.randomizeOnStart &&
+          a.title === b.title &&
+          a.people.length === b.people.length &&
+          a.people.every((p, i) => {
+            return (
+              p.id === b.people[i].id &&
+              p.name === b.people[i].name &&
+              p.order === b.people[i].order
+            );
+          })
+        );
+      },
+    },
+  );
+  const meetingState = createMemo<StandupMeeting>(() => {
     const updatedAt = updates()?.reduce((soFar, newOne) => {
       return new Date(newOne.updated_at).getTime() > soFar
         ? new Date(newOne.updated_at).getTime()
@@ -266,22 +286,6 @@ export default function StandupMeetingComponent() {
       resetStandup({ queryClient, standupId: params.standupId });
     }
   });
-  const people = createMemo(() => {
-    return seriesQuery?.seriesState().people.map((p) => {
-      const thisPersonUpdate = seriesQuery
-        ?.meetingState()
-        ?.updates?.find((update) => update.personId === p.id && update.done);
-      const current = p.id === seriesQuery?.meetingState().currentlyUpdating;
-      return {
-        updated: thisPersonUpdate !== undefined,
-        current,
-        optimistic:
-          thisPersonUpdate?.optimistic ||
-          (current && seriesQuery.meetingState().currentOptimistic),
-        ...p,
-      };
-    });
-  });
 
   return (
     <div class="p-3">
@@ -291,14 +295,26 @@ export default function StandupMeetingComponent() {
       <h2 class="text-lg">{seriesQuery?.seriesState().title}</h2>
       ID: {params.standupId}
       <Form>
-        <For each={people()}>
+        <For each={seriesQuery.seriesState().people}>
           {(person) => {
+            const thisPersonUpdate = () =>
+              seriesQuery
+                ?.meetingState()
+                ?.updates?.find(
+                  (update) => update.personId === person.id && update.done,
+                );
+            const current = () =>
+              person.id === seriesQuery?.meetingState().currentlyUpdating;
+            const optimistic = () =>
+              thisPersonUpdate()?.optimistic ||
+              (current() && seriesQuery.meetingState().currentOptimistic);
+            const isDone = () => thisPersonUpdate() !== undefined;
             return (
               <PersonStatus
                 name={person.name}
-                done={person.updated}
-                current={person.current}
-                optimistic={person.optimistic}
+                done={isDone()}
+                current={current()}
+                optimistic={optimistic()}
               />
             );
           }}

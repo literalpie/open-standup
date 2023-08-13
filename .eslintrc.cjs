@@ -8,7 +8,8 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:qwik/recommended"
+    "plugin:qwik/recommended",
+    "plugin:solid/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {

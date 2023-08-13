@@ -1,9 +1,4 @@
-export default function PersonStatus({
-  name,
-  done,
-  current,
-  optimistic,
-}: {
+export default function PersonStatus(props: {
   name: string;
   done: boolean;
   current: boolean;
@@ -11,14 +6,14 @@ export default function PersonStatus({
 }) {
   return (
     <div
-      class="transition px-2 duration-1000"
+      class="transition px-2 duration-500"
       classList={{
-        "bg-success text-success-content": done,
-        "bg-info text-info-content": current,
-        "opacity-75": optimistic,
+        "bg-success text-success-content": props.done,
+        "bg-info text-info-content": props.current,
+        "opacity-75": props.optimistic,
       }}
     >
-      {name}
+      {props.name}
     </div>
   );
 }
