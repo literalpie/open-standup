@@ -30,35 +30,37 @@ export function useStandupState(standupId: string) {
     ],
   }));
 
-  const isLoading = createMemo(() =>
-    queries.some((q) => q.isLoading || q.isFetching),
-  );
+  const isLoading = createMemo(() => queries.some((q) => q.isLoading));
   const isError = createMemo(() => queries.some((q) => q.isError));
   const updates = () => queries[0].data?.data;
   const fetchedSeries = () => queries[1].data?.data;
   const seriesState = createMemo(
     () => {
-      return {
-        id: standupId,
-        people:
-          updates()?.map((p) => ({
-            id: String(p.id),
-            name: p.person_name,
-            order: p.id,
-          })) ?? [],
-        randomizeOnStart: fetchedSeries()?.randomize_order ?? false,
-        title: fetchedSeries()?.title ?? "Unknown Title",
-      };
+      return isLoading()
+        ? undefined
+        : {
+            id: standupId,
+            people:
+              updates()?.map((p) => ({
+                id: String(p.id),
+                name: p.person_name,
+                order: p.id,
+              })) ?? [],
+            randomizeOnStart: fetchedSeries()?.randomize_order ?? false,
+            title: fetchedSeries()?.title ?? "Unknown Title",
+          };
     },
     undefined,
     {
       // seriesState should only be updated when the data changes
       equals: (a, b) => {
         return (
-          a.id === b.id &&
-          a.randomizeOnStart === b.randomizeOnStart &&
-          a.title === b.title &&
-          a.people.length === b.people.length &&
+          a !== undefined &&
+          b !== undefined &&
+          a.id === b?.id &&
+          a.randomizeOnStart === b?.randomizeOnStart &&
+          a.title === b?.title &&
+          a.people.length === b?.people.length &&
           a.people.every((p, i) => {
             return (
               p.id === b.people[i].id &&

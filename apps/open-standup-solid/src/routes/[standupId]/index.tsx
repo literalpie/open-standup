@@ -1,4 +1,4 @@
-import { createRouteAction, useParams } from "solid-start";
+import { A, createRouteAction, useParams } from "solid-start";
 import { StandupUpdate } from "~/shared/types";
 import { QueryClient, useQueryClient } from "@tanstack/solid-query";
 import { For, Show, onCleanup, onMount } from "solid-js";
@@ -11,6 +11,7 @@ const advanceCurrentPerson = async function ({
   finishUpdate,
   queryClient,
 }: {
+  /** If true, mark the current update as complete. If false, move to the next person without marking as complete. */
   finishUpdate: boolean;
   standupId: string;
   queryClient: QueryClient;
@@ -117,7 +118,7 @@ const resetStandup = async function ({
   return result;
 };
 
-function useResponsiveStandupState() {
+function useReactiveStandupState() {
   const queryClient = useQueryClient();
 
   // subscribe to supabase changes and update the queryClient
@@ -157,7 +158,7 @@ export default function StandupMeetingComponent() {
   const params = useParams();
   const queryClient = useQueryClient();
   const seriesQuery = useStandupState(params.standupId);
-  useResponsiveStandupState();
+  useReactiveStandupState();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, { Form }] = createRouteAction(async (formData: FormData) => {
     if (formData.get("Next") !== null) {
@@ -183,56 +184,113 @@ export default function StandupMeetingComponent() {
 
   return (
     <div class="p-3">
-      <Show when={seriesQuery?.isLoading()}>
-        <div>Loading...</div>
-      </Show>
-      <h2 class="text-lg">{seriesQuery?.seriesState().title}</h2>
-      ID: {params.standupId}
-      <Form>
-        <For each={seriesQuery.seriesState().people}>
-          {(person) => {
-            const thisPersonUpdate = () =>
-              seriesQuery
-                ?.meetingState()
-                ?.updates?.find(
-                  (update) => update.personId === person.id && update.done,
-                );
-            const current = () =>
-              person.id === seriesQuery?.meetingState().currentlyUpdating;
-            const optimistic = () =>
-              thisPersonUpdate()?.optimistic ||
-              (current() && seriesQuery.meetingState().currentOptimistic);
-            const isDone = () => thisPersonUpdate() !== undefined;
-            return (
-              <PersonStatus
-                name={person.name}
-                done={isDone()}
-                current={current()}
-                optimistic={optimistic()}
-              />
-            );
-          }}
-        </For>
-        <div class="pt-3 flex gap-1">
-          {seriesQuery?.meetingState().allDone ? (
-            <>
-              <div class="flex-grow">All Done!</div>
-              <button class="btn btn-neutral flex-grow" name="Reset">
-                Reset
-              </button>
-            </>
-          ) : (
-            <>
-              <button class="btn btn-neutral flex-grow" name="Next">
-                Next
-              </button>
-              <button class="btn flex-grow btn-outline" name="Skip">
-                Skip
-              </button>
-            </>
-          )}
+      <Show when={params.standupId === "1"}>
+        <h2 class="font-bold text-lg p-1">Welcome!</h2>
+        <p>
+          This is Open Standup. An app to help teams have quick and simple sync
+          meetings.
+        </p>
+        <p>Play with the demo below, or make your own meeting</p>
+        <div class="flex justify-center py-1">
+          <A href={"/new"} class="btn btn-neutral w-1/2">
+            Create new standup
+          </A>
         </div>
-      </Form>
+        <details>
+          <summary class="cursor-pointer">How does it work?</summary>
+          <p>
+            The name of the currently updating person is highlighted in blue.
+            The name of anyone who has already done their update is highlighted
+            in green.
+          </p>
+
+          <p>
+            Anyone in the world who is viewing the demo at the same time will
+            see the same state that you see. Try using the buttons to change
+            which participant is currently updating.
+          </p>
+        </details>
+      </Show>
+      <div class="flex justify-center items-center gap-2 pb-1">
+        <Show
+          when={!seriesQuery?.isLoading()}
+          fallback={
+            <div class="animate-pulse flex w-1/5 h-4 bg-slate-200 rounded" />
+          }
+        >
+          <h2 class="font-semibold text-lg">
+            {seriesQuery?.seriesState()?.title}
+          </h2>
+        </Show>
+        <A
+          class="edit-button btn btn-sm btn-outline"
+          href={`/${params.standupId}/edit`}
+        >
+          Edit
+        </A>
+      </div>
+      <Show
+        when={!seriesQuery?.isLoading()}
+        fallback={
+          <div>
+            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
+            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
+            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
+            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
+            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
+            <div class="flex">
+              <span class="inline animate-pulse w-1/2 h-10 bg-slate-200 rounded m-1" />
+              <span class="inline animate-pulse w-1/2 h-10 bg-slate-200 rounded m-1" />
+            </div>
+          </div>
+        }
+      >
+        <Form>
+          <For each={seriesQuery.seriesState()?.people}>
+            {(person) => {
+              const thisPersonUpdate = () =>
+                seriesQuery
+                  ?.meetingState()
+                  ?.updates?.find(
+                    (update) => update.personId === person.id && update.done,
+                  );
+              const current = () =>
+                person.id === seriesQuery?.meetingState().currentlyUpdating;
+              const optimistic = () =>
+                thisPersonUpdate()?.optimistic ||
+                (current() && seriesQuery.meetingState().currentOptimistic);
+              const isDone = () => thisPersonUpdate() !== undefined;
+              return (
+                <PersonStatus
+                  name={person.name}
+                  done={isDone()}
+                  current={current()}
+                  optimistic={optimistic()}
+                />
+              );
+            }}
+          </For>
+          <div class="pt-3 flex gap-1">
+            {seriesQuery?.meetingState().allDone ? (
+              <>
+                <div class="flex-grow">All Done!</div>
+                <button class="btn btn-neutral flex-grow" name="Reset">
+                  Reset
+                </button>
+              </>
+            ) : (
+              <>
+                <button class="btn btn-neutral flex-grow" name="Next">
+                  Next
+                </button>
+                <button class="btn flex-grow btn-outline" name="Skip">
+                  Skip
+                </button>
+              </>
+            )}
+          </div>
+        </Form>
+      </Show>
     </div>
   );
 }
