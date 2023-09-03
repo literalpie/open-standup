@@ -12,7 +12,7 @@ import {
   useQueryClient,
   hydrate,
 } from "@tanstack/solid-query";
-import { For, Show, onCleanup, onMount } from "solid-js";
+import { For, Show, createMemo, onCleanup, onMount } from "solid-js";
 import PersonStatus from "~/components/PersonStatus";
 import { supabase } from "~/shared/supabase";
 import {
@@ -20,6 +20,7 @@ import {
   getStandupUpdates,
   useStandupState,
 } from "~/shared/useStandupState";
+import { getRandomOrderValue } from "~/shared/getRandomOrderValue";
 
 const advanceCurrentPerson = async function ({
   standupId,
@@ -40,7 +41,9 @@ const advanceCurrentPerson = async function ({
   if (updates?.data?.every((up) => up.duration !== null)) {
     return;
   }
-  const sortedUpdates = [...(updates?.data ?? [])]?.sort((a, b) => a.id - b.id);
+  const sortedUpdates = [...(updates?.data ?? [])]?.sort(
+    (a, b) => (a.order ?? a.id) - (b.order ?? b.id),
+  );
   const updatingIndex = sortedUpdates.findIndex(
     (person) => person.started_at !== null && person.duration === null,
   );
@@ -87,9 +90,17 @@ const advanceCurrentPerson = async function ({
         data:
           oldData?.data.map((d) => {
             if (d.id === updatedCurrentUpdate[0]?.id) {
-              return { ...updatedCurrentUpdate[0], optimistic: true };
+              return {
+                ...updatedCurrentUpdate[0],
+                optimistic: true,
+                order: d.order,
+              };
             } else if (d.id === updatedNextUpdate[0]?.id) {
-              return { ...updatedNextUpdate[0], optimistic: true };
+              return {
+                ...updatedNextUpdate[0],
+                optimistic: true,
+                order: d.order,
+              };
             } else {
               return d;
             }
@@ -108,10 +119,26 @@ const advanceCurrentPerson = async function ({
 const resetStandup = async function ({
   queryClient,
   standupId,
+  randomizeOrder,
 }: {
   queryClient: QueryClient;
   standupId: string;
+  randomizeOrder: boolean;
 }) {
+  const existingUpdates = queryClient.getQueryData<{
+    data: StandupUpdate[];
+  }>(["standup-series", standupId, "updates"]);
+  const updatedUpdates =
+    existingUpdates?.data
+      .filter((d) => d.meeting_id === +standupId)
+      .map((update) => {
+        return {
+          ...update,
+          order: randomizeOrder ? getRandomOrderValue() : update.id,
+          duration: null,
+          started_at: null,
+        };
+      }) ?? [];
   // optimisitic update in solid-query
   queryClient.setQueryData<{
     data: StandupUpdate[];
@@ -120,14 +147,15 @@ const resetStandup = async function ({
       ...oldData,
       data:
         oldData?.data.map((d) => {
-          return { ...d, duration: null, started_at: null };
+          const matchingUpdate = updatedUpdates.find((u) => u.id === d.id);
+          return matchingUpdate ?? d;
         }) ?? [],
     };
   });
   // actual update in supabase
   const result = await supabase
     .from("updates")
-    .update({ duration: null, started_at: null })
+    .upsert(updatedUpdates)
     .eq("meeting_id", standupId);
 
   return result;
@@ -214,9 +242,40 @@ export default function StandupMeetingComponent() {
       return result;
     }
     if (formData.get("Reset") !== null) {
-      resetStandup({ queryClient, standupId: params.standupId });
+      const randomizeOrder =
+        seriesQuery.seriesState()?.randomizeOnStart ?? false;
+      resetStandup({
+        queryClient,
+        standupId: params.standupId,
+        randomizeOrder,
+      });
     }
   });
+
+  const sortedPeople = createMemo(
+    () => {
+      return seriesQuery
+        .seriesState()
+        ?.people.map((a) => ({ ...a }))
+        .sort((a, b) => (a.order ?? a.id) - (b.order ?? b.id));
+    },
+    undefined,
+    {
+      equals: (a, b) => {
+        return (
+          a?.every((p, i) => {
+            return (
+              a !== undefined &&
+              b !== undefined &&
+              p.id === b[i].id &&
+              p.name === b[i].name &&
+              p.order === b[i].order
+            );
+          }) ?? false
+        );
+      },
+    },
+  );
 
   return (
     <div class="p-3">
@@ -282,7 +341,7 @@ export default function StandupMeetingComponent() {
         }
       >
         <Form>
-          <For each={seriesQuery.seriesState()?.people}>
+          <For each={sortedPeople()}>
             {(person) => {
               const thisPersonUpdate = () =>
                 seriesQuery

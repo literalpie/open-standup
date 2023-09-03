@@ -42,7 +42,7 @@ export function useStandupState(standupId: string) {
               updates()?.map((p) => ({
                 id: String(p.id),
                 name: p.person_name,
-                order: p.id,
+                order: p.order ?? p.id,
               })) ?? [],
             randomizeOnStart: fetchedSeries()?.randomize_order ?? false,
             title: fetchedSeries()?.title ?? "Unknown Title",

@@ -1,6 +1,7 @@
 import { StandupSeriesNoId } from "~/components/SeriesForm";
 import { supabase } from "./supabase";
 import { redirect } from "solid-start";
+import { getRandomOrderValue } from "./getRandomOrderValue";
 
 export const updateMeeting = async (
   formData: StandupSeriesNoId & { id?: string },
@@ -21,6 +22,7 @@ export const updateMeeting = async (
     const updates = formData.people.map((p) => ({
       meeting_id: meetings.data.id,
       person_name: p.name,
+      order: formData.randomizeOnStart ? getRandomOrderValue() : +p.id,
     }));
     await supabase.from("updates").insert(updates);
     return redirect(`/${meetings.data.id}`);
