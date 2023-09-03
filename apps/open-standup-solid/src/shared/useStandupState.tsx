@@ -3,29 +3,27 @@ import { createQueries } from "@tanstack/solid-query";
 import { createMemo } from "solid-js";
 import { supabase } from "./supabase";
 
+export const getStandupMeeting = ({ standupId }: { standupId: string }) =>
+  supabase.from("meetings").select("*").eq("id", standupId).single();
+
+export const getStandupUpdates = ({ standupId }: { standupId: string }) =>
+  supabase
+    .from("updates")
+    .select("*")
+    .eq("meeting_id", standupId)
+    .order("id", { ascending: true });
+
 /** Fetches necessary data for a standup state. */
 export function useStandupState(standupId: string) {
   const queries = createQueries(() => ({
     queries: [
       {
         queryKey: ["standup-series", standupId, "updates"],
-        queryFn: async () => {
-          return await supabase
-            .from("updates")
-            .select("*")
-            .eq("meeting_id", standupId)
-            .order("id", { ascending: true });
-        },
+        queryFn: async () => getStandupUpdates({ standupId }),
       },
       {
         queryKey: ["standup-series", standupId, "meeting"],
-        queryFn: async () => {
-          return await supabase
-            .from("meetings")
-            .select("*")
-            .eq("id", standupId)
-            .single();
-        },
+        queryFn: async () => getStandupMeeting({ standupId }),
       },
     ],
   }));

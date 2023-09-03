@@ -1,35 +1,19 @@
-import { For, createEffect, createSignal } from "solid-js";
+import { For, createMemo, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import type { StandupSeries } from "~/shared/types";
 
 export type StandupSeriesNoId = Omit<StandupSeries, "id">;
 
 export function SeriesForm(props: {
-  series?: StandupSeriesNoId;
+  initialSeries: StandupSeriesNoId | undefined;
   onSubmit: (series: StandupSeriesNoId) => void;
 }) {
   const [editingState, setEditingState] = createStore<StandupSeriesNoId>({
-    people: [],
-    randomizeOnStart: false,
-    title: "",
+    people: [...(props.initialSeries?.people ?? [])],
+    randomizeOnStart: props.initialSeries?.randomizeOnStart ?? false,
+    title: props.initialSeries?.title ?? "",
   });
-  const [isEditing, setIsEditing] = createSignal(false);
-  createEffect(() => {
-    if (props.series) {
-      setIsEditing(true);
-      setEditingState({
-        people: [...props.series.people],
-        randomizeOnStart: props.series.randomizeOnStart,
-        title: props.series.title,
-      });
-    } else {
-      setEditingState({
-        people: [],
-        randomizeOnStart: false,
-        title: "",
-      });
-    }
-  });
+  const isEditing = createMemo(() => props.initialSeries !== undefined);
   const [newPartic, setNewPartic] = createSignal<string>();
   const submitNewParticipant = () => {
     if (!newPartic()) {

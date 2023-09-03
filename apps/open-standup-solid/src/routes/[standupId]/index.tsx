@@ -1,10 +1,25 @@
-import { A, createRouteAction, useParams } from "solid-start";
+import {
+  A,
+  createRouteAction,
+  createRouteData,
+  useParams,
+  useRouteData,
+} from "solid-start";
 import { StandupUpdate } from "~/shared/types";
-import { QueryClient, useQueryClient } from "@tanstack/solid-query";
+import {
+  QueryClient,
+  dehydrate,
+  useQueryClient,
+  hydrate,
+} from "@tanstack/solid-query";
 import { For, Show, onCleanup, onMount } from "solid-js";
 import PersonStatus from "~/components/PersonStatus";
 import { supabase } from "~/shared/supabase";
-import { useStandupState } from "~/shared/useStandupState";
+import {
+  getStandupMeeting,
+  getStandupUpdates,
+  useStandupState,
+} from "~/shared/useStandupState";
 
 const advanceCurrentPerson = async function ({
   standupId,
@@ -154,9 +169,30 @@ function useReactiveStandupState() {
   });
 }
 
+export function routeData() {
+  const params = useParams();
+  const standupId = params.standupId;
+  const queryClient = new QueryClient();
+
+  return createRouteData(async () => {
+    await queryClient.prefetchQuery({
+      queryKey: ["standup-series", standupId, "updates"],
+      queryFn: () => getStandupUpdates({ standupId }),
+    });
+    await queryClient.prefetchQuery({
+      queryKey: ["standup-series", standupId, "meeting"],
+      queryFn: () => getStandupMeeting({ standupId }),
+    });
+    return dehydrate(queryClient);
+  });
+}
+
 export default function StandupMeetingComponent() {
   const params = useParams();
+  const dehydratedQueryState = useRouteData<typeof routeData>();
+
   const queryClient = useQueryClient();
+  hydrate(queryClient, dehydratedQueryState());
   const seriesQuery = useStandupState(params.standupId);
   useReactiveStandupState();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
