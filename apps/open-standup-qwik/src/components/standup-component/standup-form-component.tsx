@@ -4,7 +4,7 @@ import { PersonStatus } from "../person-status/person-status";
 
 export const hasPersonUpdated = (
   person: Person,
-  updates: StandupMeeting["updates"]
+  updates: StandupMeeting["updates"],
 ) => {
   return updates.some((update) => update.personId === person.id && update.done);
 };
@@ -15,16 +15,18 @@ export const StandupFormComponent = component$<{
 }>(({ standupState, seriesState }) => {
   return (
     <div>
-      {seriesState?.people?.map((person) => {
-        return (
-          <PersonStatus
-            key={person.name}
-            name={person.name}
-            done={hasPersonUpdated(person, standupState.updates)}
-            current={person.id === standupState.currentlyUpdating}
-          />
-        );
-      })}
+      {seriesState?.people
+        .sort((a, b) => a.order - b.order)
+        ?.map((person) => {
+          return (
+            <PersonStatus
+              key={person.name}
+              name={person.name}
+              done={hasPersonUpdated(person, standupState.updates)}
+              current={person.id === standupState.currentlyUpdating}
+            />
+          );
+        })}
       <div class="pt-3 flex gap-1">
         {standupState.allDone ? (
           <>

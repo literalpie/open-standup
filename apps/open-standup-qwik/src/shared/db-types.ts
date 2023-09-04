@@ -56,6 +56,7 @@ export interface Database {
           duration: number | null;
           id: number;
           meeting_id: number;
+          order: number | null;
           person_name: string;
           started_at: string | null;
           updated_at: string;
@@ -64,6 +65,7 @@ export interface Database {
           duration?: number | null;
           id?: number;
           meeting_id: number;
+          order?: number | null;
           person_name: string;
           started_at?: string | null;
           updated_at?: string;
@@ -72,6 +74,7 @@ export interface Database {
           duration?: number | null;
           id?: number;
           meeting_id?: number;
+          order?: number | null;
           person_name?: string;
           started_at?: string | null;
           updated_at?: string;
@@ -82,7 +85,7 @@ export interface Database {
             columns: ["meeting_id"];
             referencedRelation: "meetings";
             referencedColumns: ["id"];
-          }
+          },
         ];
       };
     };
