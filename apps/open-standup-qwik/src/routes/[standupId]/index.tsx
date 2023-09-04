@@ -11,7 +11,7 @@ import { server$, Form } from "@builder.io/qwik-city";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { Link, useLocation, routeAction$ } from "@builder.io/qwik-city";
 import { StandupFormComponent } from "~/components/standup-component/standup-form-component";
-import type { StandupMeeting, StandupSeries } from "~/shared/types";
+import type { Person, StandupMeeting, StandupSeries } from "~/shared/types";
 import { getSbClient } from "~/server-helpers/get-sb-client";
 import { Introduction } from "~/components/introduction/introduction";
 
@@ -25,7 +25,12 @@ export const useStandupSeries = routeLoader$<StandupSeries>(
       .select("*")
       .eq("meeting_id", standupId)
       .order("id", { ascending: true }) as unknown as {
-      data: { person_name: string; id: number; meeting_id: number }[];
+      data: {
+        person_name: string;
+        id: number;
+        meeting_id: number;
+        order: number;
+      }[];
     };
     const meetingsReq = sbClient
       .from("meetings")
@@ -42,7 +47,7 @@ export const useStandupSeries = routeLoader$<StandupSeries>(
         people.data?.map((p) => ({
           id: String(p.id),
           name: p.person_name,
-          order: p.id,
+          order: p.order ?? p.id,
         })) ?? [],
       randomizeOnStart: meetings.data?.randomize_order ?? false,
       title: meetings.data?.title ?? "Unknown Title",
@@ -96,7 +101,9 @@ export const advanceCurrentPerson = server$(async function ({
   if (updates.data?.every((up) => up.duration !== null)) {
     return;
   }
-  const sortedUpdates = [...(updates.data ?? [])]?.sort((a, b) => a.id - b.id);
+  const sortedUpdates = [...(updates.data ?? [])]?.sort(
+    (a, b) => (a.order ?? a.id) - (b.order ?? b.id),
+  );
   const updatingIndex = sortedUpdates.findIndex(
     (person) => person.started_at !== null && person.duration === null,
   );
@@ -193,6 +200,7 @@ export const usePollingMeeting = () => {
 export const useEagerMeetingState = (
   standupNextAction: ReturnType<typeof useStandupNext>,
   meetingState: Signal<StandupMeeting>,
+  people: Person[],
 ) => {
   const submitTime = useSignal<Date | undefined>();
   useTask$(({ track }) => {
@@ -220,8 +228,16 @@ export const useEagerMeetingState = (
     const reseting = standupNextAction.formData?.get("Reset") !== null;
     if ((skipping || nexting) && submitNewerThanMeetingState) {
       const sortedUpdates = [...(meetingState.value.updates ?? [])]?.sort(
-        (a, b) => +a.personId - +b.personId,
+        (a, b) => {
+          const matchingPersonA = people.find((p) => p.id === a.personId);
+          const matchingPersonB = people.find((p) => p.id === b.personId);
+          if (matchingPersonA !== undefined && matchingPersonB) {
+            return matchingPersonA.order - matchingPersonB.order;
+          }
+          return +a.personId - +b.personId;
+        },
       );
+      console.log("sorted updates", sortedUpdates, people);
 
       const updatingIndex = sortedUpdates.findIndex(
         (person) => person.personId === meetingState.value.currentlyUpdating,
@@ -264,6 +280,7 @@ export default component$(() => {
   const meetingState = useEagerMeetingState(
     standupNextAction,
     serverMeetingState,
+    loaderSeriesState.value.people,
   );
 
   return (
