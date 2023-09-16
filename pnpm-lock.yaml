@@ -92,6 +92,9 @@ importers:
 
   apps/open-standup-solid:
     dependencies:
+      '@solid-primitives/date':
+        specifier: 2.0.17
+        version: 2.0.17(solid-js@1.7.11)
       '@solidjs/meta':
         specifier: ^0.28.2
         version: 0.28.2(solid-js@1.7.11)
@@ -2295,6 +2298,51 @@ packages:
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
     dev: true
+
+  /@solid-primitives/date@2.0.17(solid-js@1.7.11):
+    resolution: {integrity: sha512-65pDGpzUBKRLMoWF6ljw8g2yDGmJl5t9mJ8mBoui8M4STBY2DqJROPnpJPyPfz1Hmn2OOazPFJPrun/ZbvQ+EA==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/memo': 1.3.4(solid-js@1.7.11)
+      '@solid-primitives/timer': 1.3.7(solid-js@1.7.11)
+      '@solid-primitives/utils': 6.2.1(solid-js@1.7.11)
+      solid-js: 1.7.11
+    dev: false
+
+  /@solid-primitives/memo@1.3.4(solid-js@1.7.11):
+    resolution: {integrity: sha512-OJl1fGo9ta1aX4G2M5Isfjco8DaPgd/VPqcm/AAoiaqMpgLaRx89CGt+1X5luUbyqCB8mulVOJSHvq4CUsK1DQ==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/scheduled': 1.4.1(solid-js@1.7.11)
+      '@solid-primitives/utils': 6.2.1(solid-js@1.7.11)
+      solid-js: 1.7.11
+    dev: false
+
+  /@solid-primitives/scheduled@1.4.1(solid-js@1.7.11):
+    resolution: {integrity: sha512-OLcNXwYpX7HUOEqNPcmR31dkyI1E2imkMDBRlqsGT0ZhJV1L2g0TEREpo4nm/kUhh8LVQzkfnxS+GONx9kh90A==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      solid-js: 1.7.11
+    dev: false
+
+  /@solid-primitives/timer@1.3.7(solid-js@1.7.11):
+    resolution: {integrity: sha512-zS3qA7WVZYsW7+iTdk2M4W1wpMvRhdcMnO23Tcd+nX3YD7eMvjOnO15Oz2mymyfl/OC2ZgM1L5ec66GayEvPwQ==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      solid-js: 1.7.11
+    dev: false
+
+  /@solid-primitives/utils@6.2.1(solid-js@1.7.11):
+    resolution: {integrity: sha512-TsecNzxiO5bLfzqb4OOuzfUmdOROcssuGqgh5rXMMaasoFZ3GoveUgdY1wcf17frMJM7kCNGNuK34EjErneZkg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      solid-js: 1.7.11
+    dev: false
 
   /@solidjs/meta@0.28.2(solid-js@1.7.11):
     resolution: {integrity: sha512-avlLgBPdk4KVxzRGFlYp/MIJo8B5jVgXPgk6OUnUP8km21Z+ovO+DUd7ZPA7ejv8PBdWi9GE3zCzw8RU2YuV2Q==}

@@ -86,6 +86,11 @@ export function useStandupState(standupId: string) {
         done: (update.duration ?? 0) > 0,
         personId: String(update.id),
         optimistic: update.optimistic,
+        duration: update.duration,
+        startTime:
+          update.started_at !== undefined && update.started_at !== null
+            ? new Date(update.started_at)
+            : undefined,
       })),
       updateTime: updatedAt !== undefined ? new Date(updatedAt) : new Date(),
       currentlyUpdating: updates() ? String(currentUpdate()?.id) : undefined,

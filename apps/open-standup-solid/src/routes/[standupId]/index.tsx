@@ -347,19 +347,25 @@ export default function StandupMeetingComponent() {
                 seriesQuery
                   ?.meetingState()
                   ?.updates?.find(
-                    (update) => update.personId === person.id && update.done,
+                    (update) =>
+                      update.personId === person.id &&
+                      (update.done || update.startTime !== undefined),
                   );
               const current = () =>
                 person.id === seriesQuery?.meetingState().currentlyUpdating;
               const optimistic = () =>
                 thisPersonUpdate()?.optimistic ||
                 (current() && seriesQuery.meetingState().currentOptimistic);
-              const isDone = () => thisPersonUpdate() !== undefined;
+              const isDone = () => thisPersonUpdate()?.done ?? false;
+              const updateStartTime = () => thisPersonUpdate()?.startTime;
+              const duration = () => thisPersonUpdate()?.duration;
               return (
                 <PersonStatus
                   name={person.name}
                   done={isDone()}
                   current={current()}
+                  updateStartTime={updateStartTime()}
+                  duration={duration()}
                   optimistic={optimistic()}
                 />
               );
