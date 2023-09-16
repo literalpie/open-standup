@@ -24,6 +24,8 @@ export interface StandupMeeting {
     personId: string;
     done: boolean;
     optimistic?: boolean /** updateTime: number */;
+    duration?: number;
+    startTime?: Date;
   }[];
   allDone: boolean;
   seriesId: string;
