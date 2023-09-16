@@ -40,8 +40,8 @@ export default function PersonStatus(props: {
     <div
       class="transition px-2 duration-500 flex justify-between"
       classList={{
-        "bg-success text-success-content": props.done,
-        "bg-info text-info-content": props.current,
+        "bg-su-complete dark:bg-su-complete-dark ": props.done,
+        "bg-su-in-progress dark:bg-su-in-progress-dark ": props.current,
         "opacity-75": props.optimistic,
       }}
     >
