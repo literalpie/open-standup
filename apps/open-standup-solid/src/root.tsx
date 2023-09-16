@@ -14,6 +14,7 @@ import {
 } from "solid-start";
 import "./root.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
+import { Themer } from "./components/Themer";
 
 export default function Root() {
   const queryClient = new QueryClient();
@@ -28,10 +29,14 @@ export default function Root() {
         <Suspense>
           <ErrorBoundary>
             <QueryClientProvider client={queryClient}>
-              <header class="p-2 border-b-2 sticky top-0 bg-base-100 flex flex-col">
-                <h1 class="font-bold text-xl self-center">
+              <header class="p-2 border-b-2 sticky top-0 bg-base-100 flex flex-row justify-between">
+                <div class="w-24" />
+                <h1 class="font-bold text-xl">
                   <A href="/">Open Standup</A>
                 </h1>
+                <div class="w-24">
+                  <Themer />
+                </div>
               </header>
               <main class="flex justify-center">
                 <div class="flex-grow p-2 max-w-4xl">
