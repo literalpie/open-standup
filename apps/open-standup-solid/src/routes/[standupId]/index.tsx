@@ -182,7 +182,6 @@ function useReactiveStandupState() {
       .on("presence", { event: "sync" }, () => {
         const newState = channel.presenceState();
         setMeetingParticipantsCount(Object.keys(newState).length);
-        console.log("sync", newState);
       })
       .on<StandupUpdate>(
         "postgres_changes",
