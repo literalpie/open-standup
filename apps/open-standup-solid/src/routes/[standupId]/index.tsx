@@ -12,7 +12,14 @@ import {
   useQueryClient,
   hydrate,
 } from "@tanstack/solid-query";
-import { For, Show, createMemo, onCleanup, onMount } from "solid-js";
+import {
+  For,
+  Show,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+} from "solid-js";
 import PersonStatus from "~/components/PersonStatus";
 import { supabase } from "~/shared/supabase";
 import {
@@ -21,6 +28,7 @@ import {
   useStandupState,
 } from "~/shared/useStandupState";
 import { getRandomOrderValue } from "~/shared/getRandomOrderValue";
+import PeopleIcon from "~/components/icons/people.svg?component-solid";
 
 const advanceCurrentPerson = async function ({
   standupId,
@@ -163,11 +171,18 @@ const resetStandup = async function ({
 
 function useReactiveStandupState() {
   const queryClient = useQueryClient();
+  const [meetingParticipantsCount, setMeetingParticipantsCount] =
+    createSignal(0);
 
   // subscribe to supabase changes and update the queryClient
   onMount(() => {
-    const sub = supabase
-      .channel("updates")
+    const channel = supabase.channel("updates");
+
+    const sub = channel
+      .on("presence", { event: "sync" }, () => {
+        const newState = channel.presenceState();
+        setMeetingParticipantsCount(Object.keys(newState).length);
+      })
       .on<StandupUpdate>(
         "postgres_changes",
         { schema: "public", event: "UPDATE", table: "updates" },
@@ -190,11 +205,15 @@ function useReactiveStandupState() {
           });
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status !== "SUBSCRIBED") return;
+        channel.track({});
+      });
     onCleanup(() => {
       sub.unsubscribe();
     });
   });
+  return { meetingParticipantsCount };
 }
 
 export function routeData() {
@@ -222,7 +241,7 @@ export default function StandupMeetingComponent() {
   const queryClient = useQueryClient();
   hydrate(queryClient, dehydratedQueryState());
   const seriesQuery = useStandupState(params.standupId);
-  useReactiveStandupState();
+  const { meetingParticipantsCount } = useReactiveStandupState();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, { Form }] = createRouteAction(async (formData: FormData) => {
     if (formData.get("Next") !== null) {
@@ -306,7 +325,8 @@ export default function StandupMeetingComponent() {
           </p>
         </details>
       </Show>
-      <div class="flex justify-center items-center gap-2 pb-1">
+      <div class="flex items-center gap-2 pb-1">
+        <div class="flex-grow basis-12" />
         <Show
           when={!seriesQuery?.isLoading()}
           fallback={
@@ -323,6 +343,16 @@ export default function StandupMeetingComponent() {
         >
           Edit
         </A>
+        <span
+          class="flex-grow flex gap-1 basis-12 justify-end"
+          aria-label={`There are ${meetingParticipantsCount()} participant(s) currently viewing this meeting.`}
+          title={`There are ${meetingParticipantsCount()} participant(s) currently viewing this meeting.`}
+        >
+          <Show when={meetingParticipantsCount() !== 0}>
+            {meetingParticipantsCount()}
+            <PeopleIcon />
+          </Show>
+        </span>
       </div>
       <Show
         when={!seriesQuery?.isLoading()}
