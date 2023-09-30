@@ -177,8 +177,6 @@ function useReactiveStandupState() {
   // subscribe to supabase changes and update the queryClient
   onMount(() => {
     const channel = supabase.channel("updates");
-    // channel
-    // .subscribe();
 
     const sub = channel
       .on("presence", { event: "sync" }, () => {
@@ -186,12 +184,6 @@ function useReactiveStandupState() {
         setMeetingParticipantsCount(Object.keys(newState).length);
         console.log("sync", newState);
       })
-      // .on("presence", { event: "join" }, ({ key, newPresences }) => {
-      //   console.log("join", key, newPresences);
-      // })
-      // .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
-      //   console.log("leave", key, leftPresences);
-      // })
       .on<StandupUpdate>(
         "postgres_changes",
         { schema: "public", event: "UPDATE", table: "updates" },
