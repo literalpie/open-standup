@@ -2,7 +2,7 @@ import {
   createTimeDifferenceFromNow,
   getCountdown,
 } from "@solid-primitives/date";
-import { createMemo } from "solid-js";
+import { createEffect, createMemo, createSignal } from "solid-js";
 
 const formatAsSeconds = (number: number) => {
   const countdown = getCountdown(number);
@@ -27,15 +27,20 @@ export default function PersonStatus(props: {
     () => props.updateStartTime?.getTime() ?? 0,
     200,
   );
-  const durationLabel = createMemo<string | undefined>((prev) => {
+  const durationLabel = createMemo(() => {
     if (props.updateStartTime) {
       return formatAsSeconds(Math.max(-1 * diff(), 0));
     }
     if (props.duration) {
       return formatAsSeconds(props.duration);
     }
-    // Keep previous value around so that it remains while animating out.
-    return prev;
+    return undefined;
+  });
+  // Keep track of the previous duration label so it can be shown while animating out
+  const [prevDuration, setPrevDuration] = createSignal<string | undefined>();
+  createEffect<string | undefined>((previous) => {
+    setPrevDuration(previous);
+    return durationLabel();
   });
   return (
     <div
@@ -48,12 +53,12 @@ export default function PersonStatus(props: {
     >
       <div class="px-1 opaci">{props.name}</div>
       <div
-        class="px-1 transition-opacity duration-500"
+        class="transition-opacity duration-500 px-1"
         classList={{
-          "opacity-0": props.updateStartTime === undefined,
+          "opacity-0": durationLabel() === undefined,
         }}
       >
-        {durationLabel()}
+        {durationLabel() || prevDuration()}
       </div>
     </div>
   );
