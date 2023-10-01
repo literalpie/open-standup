@@ -27,14 +27,15 @@ export default function PersonStatus(props: {
     () => props.updateStartTime?.getTime() ?? 0,
     200,
   );
-  const durationLabel = createMemo(() => {
+  const durationLabel = createMemo<string | undefined>((prev) => {
     if (props.updateStartTime) {
       return formatAsSeconds(Math.max(-1 * diff(), 0));
     }
     if (props.duration) {
       return formatAsSeconds(props.duration);
     }
-    return undefined;
+    // Keep previous value around so that it remains while animating out.
+    return prev;
   });
   return (
     <div
@@ -45,8 +46,15 @@ export default function PersonStatus(props: {
         "opacity-75": props.optimistic,
       }}
     >
-      <div class="px-1">{props.name}</div>
-      <div class="px-1">{durationLabel()}</div>
+      <div class="px-1 opaci">{props.name}</div>
+      <div
+        class="px-1 transition-opacity duration-500"
+        classList={{
+          "opacity-0": props.updateStartTime === undefined,
+        }}
+      >
+        {durationLabel()}
+      </div>
     </div>
   );
 }
