@@ -8,7 +8,20 @@ export default {
       'su-complete-dark': 'var(--complete-dark)',
       'su-in-progress-dark': 'var(--in-progress-dark)',
     },
-    extend: {},
+    extend: {
+      keyframes: {
+        'popover-fade-in': {
+          from: { opacity: 0, scale: '60%', 'transform-origin': 'var(--kb-popover-content-transform-origin)' },
+        },
+        'popover-fade-out': {
+          to: { opacity: 0, scale: '60%', 'transform-origin': 'var(--kb-popover-content-transform-origin)' },
+        }
+      },
+      animation: {
+        'popover-fade-in': 'popover-fade-in 200ms',
+        'popover-fade-out': 'popover-fade-out 200ms'
+      }
+    },
   },
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
 };

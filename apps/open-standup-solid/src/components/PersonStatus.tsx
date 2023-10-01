@@ -51,7 +51,7 @@ export default function PersonStatus(props: {
         "opacity-75": props.optimistic,
       }}
     >
-      <div class="px-1 opaci">{props.name}</div>
+      <div class="px-1">{props.name}</div>
       <div
         class="transition-opacity duration-500 px-1"
         classList={{
