@@ -7,35 +7,20 @@ import { RouterOutlet } from "@angular/router";
   standalone: true,
   imports: [CommonModule, RouterOutlet],
   template: `
-    <!--The content below is only a placeholder and can be replaced.-->
-    <div style="text-align:center " class="text-3xl font-bold underline">
-      test
-    </div>
-    <h2>Here are some links to help you start:</h2>
-    <ul>
-      <li>
-        <h2>
-          <a target="_blank" rel="noopener" href="https://angular.io/tutorial"
-            >Tour of Heroes</a
-          >
-        </h2>
-      </li>
-      <li>
-        <h2>
-          <a target="_blank" rel="noopener" href="https://angular.io/cli"
-            >CLI Documentation</a
-          >
-        </h2>
-      </li>
-      <li>
-        <h2>
-          <a target="_blank" rel="noopener" href="https://blog.angular.io/"
-            >Angular blog</a
-          >
-        </h2>
-      </li>
-    </ul>
-    <router-outlet></router-outlet>
+    <header
+      class="p-2 border-b-2 sticky top-0 bg-base-100 flex flex-row justify-between"
+    >
+      <div class="w-24"></div>
+      <h1 class="font-bold text-xl">
+        <A href="/">Open Standup</A>
+      </h1>
+      <div class="w-24"></div>
+    </header>
+    <main class="flex justify-center">
+      <div class="flex-grow p-2 max-w-4xl">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
   `,
   styles: [],
 })
