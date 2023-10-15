@@ -4,10 +4,12 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@builder.io/qwik",
     "types": ["node", "vite/client"],
+    "outDir": "./dist",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "open-standup-shared": ["../../libs/open-standup-shared/src"]
     }
   },
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "include": ["src"]
 }

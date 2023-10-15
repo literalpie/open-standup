@@ -11,7 +11,11 @@ import { server$, Form } from "@builder.io/qwik-city";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { Link, useLocation, routeAction$ } from "@builder.io/qwik-city";
 import { StandupFormComponent } from "~/components/standup-component/standup-form-component";
-import type { Person, StandupMeeting, StandupSeries } from "~/shared/types";
+import type {
+  Person,
+  StandupMeeting,
+  StandupSeries,
+} from "open-standup-shared";
 import { getSbClient } from "~/server-helpers/get-sb-client";
 import { Introduction } from "~/components/introduction/introduction";
 
@@ -150,11 +154,11 @@ export const useStandupNext = routeAction$(
   async (formValue, requestEventAction) => {
     const standupId = requestEventAction.params["standupId"];
 
-    if (formValue.Next !== undefined) {
+    if (formValue["Next"] !== undefined) {
       return advanceCurrentPerson({ finishUpdate: true });
-    } else if (formValue.Skip !== undefined) {
+    } else if (formValue["Skip"] !== undefined) {
       return advanceCurrentPerson({ finishUpdate: false });
-    } else if (formValue.Reset !== undefined) {
+    } else if (formValue["Reset"] !== undefined) {
       const sbClient = await getSbClient(requestEventAction);
       await sbClient
         .from("updates")
@@ -285,12 +289,12 @@ export default component$(() => {
 
   return (
     <div class="flex flex-col gap-1">
-      {location.params.standupId === "1" ? <Introduction /> : undefined}
+      {location.params["standupId"] === "1" ? <Introduction /> : undefined}
       <h2 class="font-bold text-lg text-center meeting-title flex justify-center items-center gap-2">
         <div>{loaderSeriesState.value.title}</div>
         <Link
           class="edit-button btn btn-sm btn-outline"
-          href={`/${location.params.standupId}/edit`}
+          href={`/${location.params["standupId"]}/edit`}
         >
           Edit
         </Link>

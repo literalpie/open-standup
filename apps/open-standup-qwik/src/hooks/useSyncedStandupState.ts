@@ -9,7 +9,7 @@ import { syncedStore, getYjsDoc, observeDeep } from "@syncedstore/core";
 import { WebrtcProvider } from "y-webrtc";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { YMapEvent } from "yjs";
-import { Person, StandupMeeting, StandupSeries } from "~/shared/types";
+import { Person, StandupMeeting, StandupSeries } from "open-standup-shared";
 
 type SyncedStandupState = Partial<
   Pick<StandupMeeting, "currentlyUpdating" | "allDone">

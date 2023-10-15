@@ -2,6 +2,7 @@ import vercel from "solid-start-vercel";
 import solid from "solid-start/vite";
 import { defineConfig } from "vite";
 import solidSvg, { SolidSVGPluginOptions } from "vite-plugin-solid-svg";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 const svgoConfig: SolidSVGPluginOptions = {
   svgo: {
@@ -21,5 +22,9 @@ const svgoConfig: SolidSVGPluginOptions = {
 };
 
 export default defineConfig({
-  plugins: [solid({ adapter: vercel({ edge: false }) }), solidSvg(svgoConfig)],
+  plugins: [
+    solid({ adapter: vercel({ edge: false }) }),
+    solidSvg(svgoConfig),
+    tsconfigPaths(),
+  ],
 });

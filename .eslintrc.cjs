@@ -13,7 +13,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: ["./tsconfig.json", "apps/*/tsconfig.json"],
+    project: ["apps/*/tsconfig.json", "libs/*/tsconfig.json"],
     ecmaVersion: 2021,
     sourceType: "module",
     ecmaFeatures: {
@@ -21,6 +21,7 @@ module.exports = {
     },
   },
   plugins: ["@typescript-eslint"],
+  ignorePatterns: ["**/.eslintrc.*", "**/tailwind.config.js"],
   rules: {
     "@typescript-eslint/no-explicit-any": ["error"],
     "@typescript-eslint/explicit-module-boundary-types": "off",

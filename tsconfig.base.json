@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "WebWorker", "DOM.Iterable"],
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "sourceMap": true,
+    "downlevelIteration": true,
+    "noImplicitReturns": true,
+    "useDefineForClassFields": false,
+    "noPropertyAccessFromIndexSignature": true,
+    "outDir": "dist",
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "paths": {
+      "open-standup-shared": ["./libs/open-standup-shared/src"]
+    }
+  },
+
+  "references": [{ "path": "./libs/open-standup-shared/tsconfig.json" }]
+}

@@ -1,4 +1,5 @@
 import { Database } from "./db-types";
+export * from "./db-types";
 
 export interface Person {
   name: string;
@@ -19,7 +20,7 @@ export interface StandupMeeting {
   /** The ID of the person currently updating. May be undefined if standup is complete */
   currentlyUpdating?: string;
   /** if the currentlyUpdating value is based on an optimistic update */
-  currentOptimistic: boolean;
+  currentOptimistic?: boolean;
   updates: {
     personId: string;
     done: boolean;

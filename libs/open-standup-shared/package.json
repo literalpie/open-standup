@@ -1,0 +1,18 @@
+{
+  "name": "open-standup-shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build.types": "tsc --incremental",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "typescript": "5.2.2",
+    "@supabase/supabase-js": "2.38.1",
+    "@tanstack/query-core": "5.0.0-rc.12"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

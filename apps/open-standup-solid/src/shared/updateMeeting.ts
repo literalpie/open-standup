@@ -27,4 +27,5 @@ export const updateMeeting = async (
     await supabase.from("updates").insert(updates);
     return redirect(`/${meetings.data.id}`);
   }
+  return undefined;
 };

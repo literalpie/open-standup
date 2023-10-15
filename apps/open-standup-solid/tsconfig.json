@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -11,7 +12,9 @@
     "types": ["solid-start/env", "vite-plugin-solid-svg/types"],
     "baseUrl": "./",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "open-standup-shared": ["../../libs/open-standup-shared/src"]
+
     }
   }
 }

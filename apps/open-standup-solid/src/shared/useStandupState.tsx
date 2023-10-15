@@ -1,4 +1,4 @@
-import { StandupMeeting, StandupUpdate } from "~/shared/types";
+import { StandupMeeting, StandupUpdate } from "open-standup-shared";
 import { createQueries } from "@tanstack/solid-query";
 import { createMemo } from "solid-js";
 import { supabase } from "./supabase";

@@ -33,6 +33,7 @@ export const useIncrementCount = routeAction$(async (_, requestEv) => {
       .eq("id", current.id);
     return res;
   }
+  return undefined;
 });
 
 export const usePollingCount = () => {

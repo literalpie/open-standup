@@ -30,6 +30,7 @@ export const useSaveStandupSeries = globalAction$(
       await sbClient.from("updates").insert(updates);
       return meetings.data.id;
     }
+    return undefined;
   },
   zod$({
     id: z.string().optional(),

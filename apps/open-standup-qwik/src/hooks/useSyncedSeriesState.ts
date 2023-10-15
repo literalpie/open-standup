@@ -9,7 +9,7 @@ import {
 import { syncedStore, getYjsDoc, observeDeep } from "@syncedstore/core";
 import { WebrtcProvider } from "y-webrtc";
 import { IndexeddbPersistence } from "y-indexeddb";
-import { Person, StandupSeries } from "~/shared/types";
+import { Person, StandupSeries } from "open-standup-shared";
 import { seriesContext } from "~/shared/standup-participants.context";
 
 /**

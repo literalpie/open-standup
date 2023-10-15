@@ -2,7 +2,7 @@ import { component$, useStore } from "@builder.io/qwik";
 import { DocumentHead } from "@builder.io/qwik-city";
 import { StandupComponent } from "~/components/standup-component/standup-component";
 import { useSyncedStandupState } from "~/hooks/useSyncedStandupState";
-import { Person, StandupSeries } from "~/shared/types";
+import { Person, StandupSeries } from "open-standup-shared";
 import { Introduction } from "~/components/introduction/introduction";
 
 export const makeInitialPeopleState = (names: string[]): Person[] =>
