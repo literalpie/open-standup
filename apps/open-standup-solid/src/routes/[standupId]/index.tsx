@@ -1,12 +1,10 @@
 import {
-  For,
-  Show,
-  createMemo,
-  createResource,
-  createSignal,
-  onCleanup,
-  onMount,
-} from "solid-js";
+  QueryClient,
+  dehydrate,
+  useQueryClient,
+  hydrate,
+} from "@tanstack/solid-query";
+import { For, Show, createMemo, createResource } from "solid-js";
 import PersonStatus from "~/components/PersonStatus";
 import { supabase } from "~/shared/supabase";
 import {
@@ -15,38 +13,11 @@ import {
   useStandupState,
 } from "~/shared/useStandupState";
 import PeopleIcon from "~/components/icons/people.svg?component-solid";
-import {
-  subscribeToStandupChange,
-  advanceCurrentPerson,
-  resetStandup,
-} from "open-standup-shared";
-import {
-  QueryClient,
-  dehydrate,
-  hydrate,
-  useQueryClient,
-} from "@tanstack/solid-query";
+import { advanceCurrentPerson, resetStandup } from "open-standup-shared";
 import { A, action, useParams } from "@solidjs/router";
 
 function useReactiveStandupState() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const queryClient: any = useQueryClient();
-  const [meetingParticipantsCount, setMeetingParticipantsCount] =
-    createSignal(0);
-
-  onMount(() => {
-    const sub = subscribeToStandupChange({
-      supabase,
-      queryClient,
-      onParticipantCountChange: (count) => {
-        setMeetingParticipantsCount(count);
-      },
-    });
-    onCleanup(() => {
-      sub.unsubscribe();
-    });
-  });
-  return { meetingParticipantsCount };
+  return { meetingParticipantsCount: () => 0 };
 }
 
 export default function StandupMeetingComponent() {
