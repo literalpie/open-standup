@@ -1,5 +1,3 @@
-import { Database } from "./db-types";
-
 export interface Person {
   name: string;
   order: number;
@@ -32,6 +30,6 @@ export interface StandupMeeting {
   updateTime: Date;
 }
 
-export type StandupUpdate = Database["public"]["Tables"]["updates"]["Row"] & {
-  optimistic?: boolean;
-};
+// export type StandupUpdate = Database["public"]["Tables"]["updates"]["Row"] & {
+//   optimistic?: boolean;
+// };

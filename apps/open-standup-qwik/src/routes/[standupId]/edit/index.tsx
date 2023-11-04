@@ -1,9 +1,9 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { Signal, component$, useSignal } from "@builder.io/qwik";
 import { routeLoader$, useNavigate } from "@builder.io/qwik-city";
 import { SeriesForm } from "~/components/series-form/series-form";
 import { getSbClient } from "~/server-helpers/get-sb-client";
 import { useSaveStandupSeries } from "~/server-helpers/save-standup-series";
-import { StandupSeries } from "~/shared/types";
+import { StandupSeries } from "open-standup-shared";
 
 export const useStandupSeries = routeLoader$<StandupSeries>(
   async (requestEventLoader) => {
@@ -40,7 +40,7 @@ export const useStandupSeries = routeLoader$<StandupSeries>(
 );
 
 export default component$(() => {
-  const seriesState = useStandupSeries();
+  const seriesState: Readonly<Signal<StandupSeries>> = useStandupSeries();
   const submitSeries = useSaveStandupSeries();
   const nav = useNavigate();
   const updatedId = useSignal<string | undefined>();

@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "types": [],
+    "baseUrl": "./",
+    "outDir": "dist",
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  },
+  "include": ["./src/*.ts", "./.eslint.cjs"]
+}

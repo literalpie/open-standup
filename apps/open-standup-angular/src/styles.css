@@ -1,0 +1,11 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --complete: #36d399;
+    --complete-dark: #206257;
+    --in-progress: #3abff8;
+    --in-progress-dark: #644e73;
+}

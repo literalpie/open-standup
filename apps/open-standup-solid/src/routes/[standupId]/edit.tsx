@@ -20,7 +20,7 @@ import {
 
 export function routeData() {
   const params = useParams();
-  const standupId = params.standupId;
+  const standupId = params["standupId"];
   const queryClient = new QueryClient();
 
   return createRouteData(async () => {
@@ -41,8 +41,8 @@ export default function EditStandupMeetingComponent() {
   const dehydratedQueryState = useRouteData<typeof routeData>();
   hydrate(client, dehydratedQueryState());
   const params = useParams();
-  const standupId = params.standupId;
-  const standupQuery = useStandupState(params.standupId);
+  const standupId = params["standupId"];
+  const standupQuery = useStandupState(params["standupId"]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, action] = createRouteAction(updateMeeting);

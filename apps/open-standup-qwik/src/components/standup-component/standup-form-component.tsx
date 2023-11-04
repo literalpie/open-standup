@@ -1,5 +1,9 @@
 import { component$ } from "@builder.io/qwik";
-import type { StandupSeries, StandupMeeting, Person } from "~/shared/types";
+import type {
+  StandupSeries,
+  StandupMeeting,
+  Person,
+} from "open-standup-shared";
 import { PersonStatus } from "../person-status/person-status";
 
 export const hasPersonUpdated = (

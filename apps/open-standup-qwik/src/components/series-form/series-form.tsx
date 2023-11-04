@@ -6,7 +6,7 @@ import {
   useVisibleTask$,
   useStore,
 } from "@builder.io/qwik";
-import type { StandupSeries } from "~/shared/types";
+import type { StandupSeries } from "open-standup-shared";
 
 export type StandupSeriesNoId = Omit<StandupSeries, "id">;
 

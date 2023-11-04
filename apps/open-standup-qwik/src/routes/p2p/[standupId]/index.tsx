@@ -6,7 +6,7 @@ import { useSyncedStandupState } from "~/hooks/useSyncedStandupState";
 
 export default component$(() => {
   const location = useLocation();
-  const seriesState = useSyncedSeriesState(location.params.standupId);
+  const seriesState = useSyncedSeriesState(location.params["standupId"]);
   const standupState = useSyncedStandupState(seriesState);
 
   return (
@@ -17,7 +17,7 @@ export default component$(() => {
             <div>{seriesState.title}</div>
             <Link
               class="edit-button btn btn-sm btn-outline"
-              href={`/p2p/${location.params.standupId}/edit`}
+              href={`/p2p/${location.params["standupId"]}/edit`}
             >
               Edit
             </Link>

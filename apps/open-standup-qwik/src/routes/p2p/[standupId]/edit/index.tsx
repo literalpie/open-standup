@@ -8,7 +8,7 @@ import { useSyncedSeriesState } from "~/hooks/useSyncedSeriesState";
 
 export default component$(() => {
   const location = useLocation();
-  const seriesState = useSyncedSeriesState(location.params.standupId);
+  const seriesState = useSyncedSeriesState(location.params["standupId"]);
   const navigate = useNavigate();
   const onSubmit = $((submitted: StandupSeriesNoId) => {
     seriesState.people = submitted.people;

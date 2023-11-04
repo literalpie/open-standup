@@ -1,11 +1,11 @@
 import { For, createMemo, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
-import type { StandupSeries } from "~/shared/types";
+import type { StandupSeries } from "open-standup-shared";
 
 export type StandupSeriesNoId = Omit<StandupSeries, "id">;
 
 export function SeriesForm(props: {
-  initialSeries: StandupSeriesNoId | undefined;
+  initialSeries?: StandupSeriesNoId;
   onSubmit: (series: StandupSeriesNoId) => void;
 }) {
   const [editingState, setEditingState] = createStore<StandupSeriesNoId>({
