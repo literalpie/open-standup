@@ -5,20 +5,14 @@ import {
   useParams,
   useRouteData,
 } from "solid-start";
+import $server from "solid-start/server";
 import {
   QueryClient,
   dehydrate,
   useQueryClient,
   hydrate,
 } from "@tanstack/solid-query";
-import {
-  For,
-  Show,
-  createMemo,
-  createSignal,
-  onCleanup,
-  onMount,
-} from "solid-js";
+import { For, Show, createMemo } from "solid-js";
 import PersonStatus from "~/components/PersonStatus";
 import { supabase } from "~/shared/supabase";
 import {
@@ -27,31 +21,10 @@ import {
   useStandupState,
 } from "~/shared/useStandupState";
 import PeopleIcon from "~/components/icons/people.svg?component-solid";
-import {
-  subscribeToStandupChange,
-  advanceCurrentPerson,
-  resetStandup,
-} from "open-standup-shared";
+import { advanceCurrentPerson, resetStandup } from "open-standup-shared";
 
 function useReactiveStandupState() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const queryClient: any = useQueryClient();
-  const [meetingParticipantsCount, setMeetingParticipantsCount] =
-    createSignal(0);
-
-  onMount(() => {
-    const sub = subscribeToStandupChange({
-      supabase,
-      queryClient,
-      onParticipantCountChange: (count) => {
-        setMeetingParticipantsCount(count);
-      },
-    });
-    onCleanup(() => {
-      sub.unsubscribe();
-    });
-  });
-  return { meetingParticipantsCount };
+  return { meetingParticipantsCount: () => 0 };
 }
 
 export function routeData() {
@@ -84,7 +57,7 @@ export default function StandupMeetingComponent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, { Form }] = createRouteAction(async (formData: FormData) => {
     if (formData.get("Next") !== null) {
-      const result = await advanceCurrentPerson({
+      const result = await $server(advanceCurrentPerson)({
         supabase,
         finishUpdate: true,
         standupId: params["standupId"],
@@ -93,7 +66,7 @@ export default function StandupMeetingComponent() {
       return result;
     }
     if (formData.get("Skip") !== null) {
-      const result = await advanceCurrentPerson({
+      const result = await $server(advanceCurrentPerson)({
         supabase,
         finishUpdate: false,
         standupId: params["standupId"],
@@ -104,7 +77,7 @@ export default function StandupMeetingComponent() {
     if (formData.get("Reset") !== null) {
       const randomizeOrder =
         seriesQuery.seriesState()?.randomizeOnStart ?? false;
-      resetStandup({
+      $server(resetStandup)({
         supabase,
         queryClient,
         standupId: params["standupId"],
