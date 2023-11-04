@@ -66,9 +66,9 @@ It is built using:
 - [Angular](https://angular.io) - A classic framework with a great ecosytem of strongly-opinionated standards
 - [Supabase](https://supabase.com) - An open-source realtime database built on PostgreSQL
 
-You can see view the latest deployed version at https://open-standup.vercel.app/p2p/
+This version is not deployed anywhere.
 
-The code is located in ./apps/open-standup-qwik/src/routes/2p2
+The code is located in ./apps/open-standup-angular
 
 ## Development
 
