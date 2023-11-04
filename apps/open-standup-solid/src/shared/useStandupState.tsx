@@ -1,4 +1,8 @@
-import { StandupMeeting, StandupUpdate } from "open-standup-shared";
+import {
+  StandupMeeting,
+  defaultMeetingState,
+  getMeetingState,
+} from "open-standup-shared";
 import { createQueries } from "@tanstack/solid-query";
 import { createMemo } from "solid-js";
 import { supabase } from "./supabase";
@@ -72,30 +76,9 @@ export function useStandupState(standupId: string) {
   );
 
   const meetingState = createMemo<StandupMeeting>(() => {
-    const updatedAt = updates()?.reduce((soFar, newOne) => {
-      return new Date(newOne.updated_at).getTime() > soFar
-        ? new Date(newOne.updated_at).getTime()
-        : soFar;
-    }, 0);
-    const currentUpdate: () => StandupUpdate | undefined = () =>
-      updates()?.find((update) => update.started_at !== null);
-    return {
-      allDone: updates()?.every((update) => (update.duration ?? 0) > 0),
-      seriesId: standupId,
-      updates: updates()?.map((update: StandupUpdate) => ({
-        done: (update.duration ?? 0) > 0,
-        personId: String(update.id),
-        optimistic: update.optimistic,
-        duration: update.duration,
-        startTime:
-          update.started_at !== undefined && update.started_at !== null
-            ? new Date(update.started_at)
-            : undefined,
-      })),
-      updateTime: updatedAt !== undefined ? new Date(updatedAt) : new Date(),
-      currentlyUpdating: updates() ? String(currentUpdate()?.id) : undefined,
-      currentOptimistic: currentUpdate()?.optimistic,
-    } as StandupMeeting;
+    return updates()
+      ? getMeetingState({ updates: updates()!, id: standupId })
+      : defaultMeetingState;
   });
 
   return { isLoading, isError, seriesState, meetingState };

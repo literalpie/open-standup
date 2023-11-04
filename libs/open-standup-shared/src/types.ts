@@ -1,6 +1,14 @@
 import { Database } from "./db-types";
 export * from "./db-types";
 
+export const defaultMeetingState: StandupMeeting = {
+  allDone: false,
+  currentOptimistic: false,
+  seriesId: "",
+  updates: [],
+  updateTime: new Date(),
+};
+
 export interface Person {
   name: string;
   order: number;

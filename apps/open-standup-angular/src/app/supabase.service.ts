@@ -9,18 +9,15 @@ import { RealtimeChannel, createClient } from "@supabase/supabase-js";
 import { environment } from "../environment";
 import { QueryClientService, UseQuery } from "@ngneat/query";
 import { combineLatest, map, from } from "rxjs";
-import { Database } from "../shared/db-types";
-import { StandupMeeting } from "../shared/types";
 import { isPlatformBrowser } from "@angular/common";
 import {
   resetStandup,
   advanceCurrentPerson,
   subscribeToStandupChange,
+  Database,
+  getMeetingState,
+  defaultMeetingState,
 } from "open-standup-shared";
-
-export type StandupUpdate = Database["public"]["Tables"]["updates"]["Row"] & {
-  optimistic?: boolean;
-};
 
 @Injectable({
   providedIn: "root",
@@ -83,32 +80,10 @@ export class SupabaseService implements OnDestroy {
           randomizeOnStart: fetchedSeries?.randomize_order,
           title: fetchedSeries?.title ?? "Unknown Title",
         };
-        const updatedAt = updates?.reduce((soFar, newOne) => {
-          return new Date(newOne.updated_at).getTime() > soFar
-            ? new Date(newOne.updated_at).getTime()
-            : soFar;
-        }, 0);
-        const currentUpdate: StandupUpdate | undefined = updates?.find(
-          (update) => update.started_at !== null,
-        );
-        const meetingState = {
-          allDone: updates?.every((update) => (update.duration ?? 0) > 0),
-          seriesId: String(id),
-          updates: updates?.map((update: StandupUpdate) => ({
-            done: (update.duration ?? 0) > 0,
-            personId: String(update.id),
-            optimistic: update.optimistic,
-            duration: update.duration,
-            startTime:
-              update.started_at !== undefined && update.started_at !== null
-                ? new Date(update.started_at)
-                : undefined,
-          })),
-          updateTime:
-            updatedAt !== undefined ? new Date(updatedAt) : new Date(),
-          currentlyUpdating: updates ? String(currentUpdate?.id) : undefined,
-          currentOptimistic: currentUpdate?.optimistic,
-        } as StandupMeeting;
+        const meetingState = updates
+          ? getMeetingState({ updates, id })
+          : defaultMeetingState;
+
         return { isLoading, isError, seriesState, meetingState };
       }),
     );

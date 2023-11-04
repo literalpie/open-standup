@@ -57,6 +57,19 @@ You can see view the latest deployed version at https://open-standup.vercel.app/
 
 The code is located in ./apps/open-standup-qwik/src/routes/2p2
 
+### Angular
+
+This one cannot edit standup series, but it can join a standup and next/skip the current updater.
+
+It is built using:
+
+- [Angular](https://angular.io) - A classic framework with a great ecosytem of strongly-opinionated standards
+- [Supabase](https://supabase.com) - An open-source realtime database built on PostgreSQL
+
+You can see view the latest deployed version at https://open-standup.vercel.app/p2p/
+
+The code is located in ./apps/open-standup-qwik/src/routes/2p2
+
 ## Development
 
 Pull the code and run `pnpm install`, then a command for the app you want, such as `pnpm --filter ./apps/open-standup-solid run dev`.
