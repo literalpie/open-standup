@@ -8,11 +8,7 @@ import {
 import { createResource } from "solid-js";
 import { SeriesForm } from "~/components/SeriesForm";
 import { updateMeeting } from "~/shared/updateMeeting";
-import {
-  getStandupMeeting,
-  getStandupUpdates,
-  useStandupState,
-} from "~/shared/useStandupState";
+import { getStandupUpdates, useStandupState } from "~/shared/useStandupState";
 
 export default function EditStandupMeetingComponent() {
   const client = useQueryClient();
@@ -23,10 +19,6 @@ export default function EditStandupMeetingComponent() {
     await queryClient.prefetchQuery({
       queryKey: ["standup-series", standupId, "updates"],
       queryFn: () => getStandupUpdates({ standupId }),
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ["standup-series", standupId, "meeting"],
-      queryFn: () => getStandupMeeting({ standupId }),
     });
     return dehydrate(queryClient);
   });

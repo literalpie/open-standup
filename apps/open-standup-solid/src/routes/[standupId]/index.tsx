@@ -4,20 +4,45 @@ import {
   useQueryClient,
   hydrate,
 } from "@tanstack/solid-query";
-import { For, Show, createMemo, createResource } from "solid-js";
+import {
+  For,
+  Show,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+  createResource,
+} from "solid-js";
 import PersonStatus from "~/components/PersonStatus";
 import { supabase } from "~/shared/supabase";
-import {
-  getStandupMeeting,
-  getStandupUpdates,
-  useStandupState,
-} from "~/shared/useStandupState";
+import { getStandupUpdates, useStandupState } from "~/shared/useStandupState";
 import PeopleIcon from "~/components/icons/people.svg?component-solid";
-import { advanceCurrentPerson, resetStandup } from "open-standup-shared";
 import { A, action, useParams } from "@solidjs/router";
+import {
+  advanceCurrentPerson,
+  resetStandup,
+  subscribeToStandupChange,
+} from "open-standup-shared";
 
 function useReactiveStandupState() {
-  return { meetingParticipantsCount: () => 0 };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const queryClient: any = useQueryClient();
+  const [meetingParticipantsCount, setMeetingParticipantsCount] =
+    createSignal(0);
+
+  onMount(() => {
+    const sub = subscribeToStandupChange({
+      supabase,
+      queryClient,
+      onParticipantCountChange: (count) => {
+        setMeetingParticipantsCount(count);
+      },
+    });
+    onCleanup(() => {
+      sub.unsubscribe();
+    });
+  });
+  return { meetingParticipantsCount };
 }
 
 export default function StandupMeetingComponent() {
@@ -29,10 +54,6 @@ export default function StandupMeetingComponent() {
     await queryClient.prefetchQuery({
       queryKey: ["standup-series", standupId, "updates"],
       queryFn: () => getStandupUpdates({ standupId }),
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ["standup-series", standupId, "meeting"],
-      queryFn: () => getStandupMeeting({ standupId }),
     });
     return dehydrate(queryClient);
   });
@@ -76,16 +97,20 @@ export default function StandupMeetingComponent() {
 
   const sortedPeople = createMemo(
     () => {
-      return seriesQuery
+      // const sortedPids = seriesQuery.meetingState().updates.map(u=>u.)
+      const sortedPepe = seriesQuery
         .seriesState()
-        ?.people.map((a) => ({ ...a }))
-        .sort((a, b) => (a.order ?? a.id) - (b.order ?? b.id));
+        ?.people?.map((a) => ({ ...a }))
+        .sort((a, b) => (a.order ?? +a.id) - (b.order ?? +b.id));
+      console.log("sorted pepe", sortedPepe);
+      return sortedPepe;
     },
     undefined,
     {
       equals: (a, b) => {
         return (
-          a?.every((p, i) => {
+          a.length === b.length &&
+          (a?.every((p, i) => {
             return (
               a !== undefined &&
               b !== undefined &&
@@ -93,7 +118,8 @@ export default function StandupMeetingComponent() {
               p.name === b[i].name &&
               p.order === b[i].order
             );
-          }) ?? false
+          }) ??
+            false)
         );
       },
     },
