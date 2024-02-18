@@ -79,3 +79,9 @@ If you're using one of the Supabase apps, you'll also need to run `pnpx supabase
 ## Future
 
 I may continue to add more frameworks (Modern Angular, Next, Svelte, etc.), or just keep building out the Solid app since I like how that one's going (error handling, time limits, history, etc.).
+
+## Plan for adding update history
+
+- There needs to be a people table. It will have meeting_id, person_id, and a name.
+- Add a meeting_instance table with mostly just an ID (and a date I guess)
+- update the updates table to make each update be linked to a meeting_instance ID and a person_id instead of a name

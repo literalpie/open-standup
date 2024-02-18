@@ -1,8 +1,10 @@
 import { For, createMemo, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
-import type { StandupSeries } from "open-standup-shared";
+import type { Person, StandupSeries } from "open-standup-shared";
 
-export type StandupSeriesNoId = Omit<StandupSeries, "id">;
+export type StandupSeriesNoId = Omit<StandupSeries, "id" | "people"> & {
+  people: (Omit<Person, "id"> & { id?: string; tempId?: string })[];
+};
 
 export function SeriesForm(props: {
   initialSeries?: StandupSeriesNoId;
@@ -21,14 +23,15 @@ export function SeriesForm(props: {
     }
     const maxId =
       editingState.people
-        .map((p) => +p.id)
+        // either ID or tempId should always exist
+        .map((p) => +(p.id ?? p.tempId!))
         .sort((id, id2) => id - id2)
         .at(-1) ?? 0;
     setEditingState("people", (old) => [
       ...old,
       {
         name: newPartic()!,
-        id: String(maxId + 1),
+        tempId: String(maxId + 1),
         order: editingState.people.length,
       },
     ]);
@@ -68,7 +71,11 @@ export function SeriesForm(props: {
                 aria-label="Remove participant"
                 onClick={() => {
                   setEditingState("people", (old) =>
-                    old.filter((person) => person.id !== partic.id),
+                    old.filter(
+                      (person) =>
+                        (person.tempId ?? person.id) !==
+                        (partic.tempId ?? partic.id),
+                    ),
                   );
                   // make sure there aren't gaps in the orders
                   setEditingState("people", (old) =>

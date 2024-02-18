@@ -27,6 +27,7 @@
     "@supabase/supabase-js": "2.38.1",
     "@tailwindcss/typography": "^0.5.9",
     "@tanstack/solid-query": "5.0.0-beta.15",
+    "@tanstack/solid-query-devtools": "^5.12.1",
     "daisyui": "^3.2.1",
     "solid-js": "^1.7.11",
     "solid-start": "^0.3.3",
