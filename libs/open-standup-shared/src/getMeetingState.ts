@@ -18,7 +18,7 @@ export const getMeetingState = ({
     seriesId: String(id),
     updates: updates.map((update: StandupUpdate) => ({
       done: (update.duration ?? 0) > 0,
-      personId: String(update.id),
+      personId: String(update.person_id),
       optimistic: update.optimistic,
       duration: update.duration ?? undefined,
       startTime:
@@ -27,7 +27,7 @@ export const getMeetingState = ({
           : undefined,
     })),
     updateTime: updatedAt !== undefined ? new Date(updatedAt) : new Date(),
-    currentlyUpdating: updates ? String(currentUpdate?.id) : undefined,
+    currentlyUpdating: updates ? String(currentUpdate?.person_id) : undefined,
     currentOptimistic: currentUpdate?.optimistic ?? false,
   };
 };

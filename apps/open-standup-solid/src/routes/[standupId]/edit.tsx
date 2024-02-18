@@ -12,11 +12,7 @@ import {
 } from "solid-start";
 import { SeriesForm } from "~/components/SeriesForm";
 import { updateMeeting } from "~/shared/updateMeeting";
-import {
-  getStandupMeeting,
-  getStandupUpdates,
-  useStandupState,
-} from "~/shared/useStandupState";
+import { getStandupUpdates, useStandupState } from "~/shared/useStandupState";
 
 export function routeData() {
   const params = useParams();
@@ -27,10 +23,6 @@ export function routeData() {
     await queryClient.prefetchQuery({
       queryKey: ["standup-series", standupId, "updates"],
       queryFn: () => getStandupUpdates({ standupId }),
-    });
-    await queryClient.prefetchQuery({
-      queryKey: ["standup-series", standupId, "meeting"],
-      queryFn: () => getStandupMeeting({ standupId }),
     });
     return dehydrate(queryClient);
   });
