@@ -3,7 +3,7 @@ import {
   defaultMeetingState,
   getMeetingState,
 } from "open-standup-shared";
-import { createQuery } from "@tanstack/solid-query";
+import { createQueries } from "@tanstack/solid-query";
 import { createMemo } from "solid-js";
 import { supabase } from "./supabase";
 
@@ -19,20 +19,23 @@ export const getStandupUpdates = ({ standupId }: { standupId: string }) =>
 
 /** Fetches necessary data for a standup state. */
 export function useStandupState(standupId: string) {
-  const updateQuery = createQuery(() => ({
-    queryKey: ["standup-series", standupId, "updates"],
-    queryFn: async () => getStandupUpdates({ standupId }),
+  const queries = createQueries(() => ({
+    queries: [
+      {
+        queryKey: ["standup-series", standupId, "updates"],
+        queryFn: async () => getStandupUpdates({ standupId }),
+      },
+      {
+        queryKey: ["standup-series", standupId, "meeting"],
+        queryFn: async () => getStandupMeeting({ standupId }),
+      },
+    ],
   }));
-  const seriesQuery = createQuery(() => ({
-    queryKey: ["standup-series", standupId, "meeting"],
-    queryFn: async () => getStandupMeeting({ standupId }),
-  }));
-  const isLoading = createMemo(
-    () => updateQuery.isLoading || seriesQuery.isLoading,
-  );
-  const isError = createMemo(() => updateQuery.isError || seriesQuery.isError);
-  const updates = () => updateQuery.data?.data;
-  const fetchedSeries = () => seriesQuery.data?.data;
+
+  const isLoading = createMemo(() => queries.some((q) => q.isLoading));
+  const isError = createMemo(() => queries.some((q) => q.isError));
+  const updates = () => queries[0].data?.data;
+  const fetchedSeries = () => queries[1].data?.data;
   const seriesState = createMemo(
     () => {
       return isLoading()

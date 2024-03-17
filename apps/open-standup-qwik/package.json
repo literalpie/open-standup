@@ -21,20 +21,21 @@
   "devDependencies": {
     "@builder.io/qwik": "~1.2.6",
     "@builder.io/qwik-city": "~1.2.6",
-    "@supabase/supabase-js": "2.38.1",
     "@types/node": "^20.4.1",
     "autoprefixer": "10.4.14",
     "node-fetch": "3.3.1",
-    "open-standup-shared": "workspace:^",
     "postcss": "^8.4.25",
     "prettier": "3.0.0",
-    "supabase": "1.100.1",
-    "supabase-auth-helpers-qwik": "^0.0.3",
     "tailwindcss": "^3.3.2",
     "typescript": "5.1.6",
     "vercel": "^31.0.1",
     "vite": "~4.3.0",
-    "vite-tsconfig-paths": "4.2.0"
+    "open-standup-shared": "workspace:^",
+    "vite-tsconfig-paths": "4.2.0",
+    "supabase-auth-helpers-qwik": "^0.0.3",
+    "supabase": "1.100.1",
+    "@supabase/supabase-js": "2.38.1"
+
   },
   "dependencies": {
     "@syncedstore/core": "^0.5.1",

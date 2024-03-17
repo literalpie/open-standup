@@ -8,9 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "typescript": "5.2.2",
     "@supabase/supabase-js": "2.38.1",
-    "@tanstack/query-core": "5.0.0-rc.12",
-    "typescript": "5.4.2"
+    "@tanstack/query-core": "5.0.0-rc.12"
   },
   "keywords": [],
   "author": "",

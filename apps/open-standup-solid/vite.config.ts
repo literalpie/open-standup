@@ -1,4 +1,6 @@
-import { defineConfig } from "@solidjs/start/config";
+import vercel from "solid-start-vercel";
+import solid from "solid-start/vite";
+import { defineConfig } from "vite";
 import solidSvg, { SolidSVGPluginOptions } from "vite-plugin-solid-svg";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -20,10 +22,9 @@ const svgoConfig: SolidSVGPluginOptions = {
 };
 
 export default defineConfig({
-  vite: {
-    plugins: [solidSvg(svgoConfig), tsconfigPaths()],
-  },
-  server: {
-    preset: "vercel",
-  },
+  plugins: [
+    solid({ adapter: vercel({ edge: false }) }),
+    solidSvg(svgoConfig),
+    tsconfigPaths(),
+  ],
 });

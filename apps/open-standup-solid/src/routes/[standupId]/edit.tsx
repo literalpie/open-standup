@@ -1,11 +1,15 @@
-import { useAction, useParams } from "@solidjs/router";
 import {
   QueryClient,
   dehydrate,
   hydrate,
   useQueryClient,
 } from "@tanstack/solid-query";
-import { createResource } from "solid-js";
+import {
+  createRouteAction,
+  createRouteData,
+  useParams,
+  useRouteData,
+} from "solid-start";
 import { SeriesForm } from "~/components/SeriesForm";
 import { updateMeeting } from "~/shared/updateMeeting";
 import {
@@ -14,12 +18,12 @@ import {
   useStandupState,
 } from "~/shared/useStandupState";
 
-export default function EditStandupMeetingComponent() {
-  const client = useQueryClient();
-  const [dehydratedQueryState] = createResource(async () => {
-    const params = useParams();
-    const standupId = params["standupId"];
-    const queryClient = new QueryClient();
+export function routeData() {
+  const params = useParams();
+  const standupId = params["standupId"];
+  const queryClient = new QueryClient();
+
+  return createRouteData(async () => {
     await queryClient.prefetchQuery({
       queryKey: ["standup-series", standupId, "updates"],
       queryFn: () => getStandupUpdates({ standupId }),
@@ -30,14 +34,18 @@ export default function EditStandupMeetingComponent() {
     });
     return dehydrate(queryClient);
   });
+}
 
+export default function EditStandupMeetingComponent() {
+  const client = useQueryClient();
+  const dehydratedQueryState = useRouteData<typeof routeData>();
   hydrate(client, dehydratedQueryState());
   const params = useParams();
   const standupId = params["standupId"];
   const standupQuery = useStandupState(params["standupId"]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const action = useAction(updateMeeting);
+  const [_, action] = createRouteAction(updateMeeting);
   return (
     <SeriesForm
       onSubmit={(series) => {
