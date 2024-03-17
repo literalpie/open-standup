@@ -1,9 +1,8 @@
-import { createRouteAction } from "solid-start";
+import { useAction } from "@solidjs/router";
 import { SeriesForm } from "~/components/SeriesForm";
 import { updateMeeting } from "~/shared/updateMeeting";
 
 export default function EditStandupMeetingComponent() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, action] = createRouteAction(updateMeeting);
+  const action = useAction(updateMeeting);
   return <SeriesForm onSubmit={action} />;
 }

@@ -1,4 +1,4 @@
-import { useNavigate } from "solid-start";
+import { useNavigate } from "@solidjs/router";
 
 export default function Home() {
   useNavigate()("/1");
