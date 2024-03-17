@@ -1,6 +1,7 @@
 { 
     "rules": {
         "qwik/use-method-usage": ["error"],
-        "qwik/jsx-key": ["error"]
+        "qwik/jsx-key": ["error"],
+        "qwik/valid-lexical-scope": false
     }
 }
