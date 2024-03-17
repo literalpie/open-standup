@@ -9,12 +9,11 @@
     "jsxImportSource": "solid-js",
     "jsx": "preserve",
     "strict": true,
-    "types": ["solid-start/env", "vite-plugin-solid-svg/types"],
+    "types": ["@solidjs/start/env", "vite-plugin-solid-svg/types"],
     "baseUrl": "./",
     "paths": {
       "~/*": ["./src/*"],
       "open-standup-shared": ["../../libs/open-standup-shared/src"]
-
     }
   }
 }

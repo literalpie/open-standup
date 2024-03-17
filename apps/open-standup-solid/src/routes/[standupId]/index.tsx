@@ -1,20 +1,8 @@
 import {
-  A,
-  createRouteAction,
-  createRouteData,
-  useParams,
-  useRouteData,
-} from "solid-start";
-import {
-  QueryClient,
-  dehydrate,
-  useQueryClient,
-  hydrate,
-} from "@tanstack/solid-query";
-import {
   For,
   Show,
   createMemo,
+  createResource,
   createSignal,
   onCleanup,
   onMount,
@@ -32,6 +20,13 @@ import {
   advanceCurrentPerson,
   resetStandup,
 } from "open-standup-shared";
+import {
+  QueryClient,
+  dehydrate,
+  hydrate,
+  useQueryClient,
+} from "@tanstack/solid-query";
+import { A, action, useParams } from "@solidjs/router";
 
 function useReactiveStandupState() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,12 +49,12 @@ function useReactiveStandupState() {
   return { meetingParticipantsCount };
 }
 
-export function routeData() {
+export default function StandupMeetingComponent() {
   const params = useParams();
-  const standupId = params["standupId"];
-  const queryClient = new QueryClient();
-
-  return createRouteData(async () => {
+  const [dehydratedQueryState] = createResource(async () => {
+    const params = useParams();
+    const standupId = params["standupId"];
+    const queryClient = new QueryClient();
     await queryClient.prefetchQuery({
       queryKey: ["standup-series", standupId, "updates"],
       queryFn: () => getStandupUpdates({ standupId }),
@@ -70,19 +65,13 @@ export function routeData() {
     });
     return dehydrate(queryClient);
   });
-}
-
-export default function StandupMeetingComponent() {
-  const params = useParams();
-  const dehydratedQueryState = useRouteData<typeof routeData>();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const queryClient: any = useQueryClient();
   hydrate(queryClient, dehydratedQueryState());
   const seriesQuery = useStandupState(params["standupId"]);
   const { meetingParticipantsCount } = useReactiveStandupState();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, { Form }] = createRouteAction(async (formData: FormData) => {
+  const changeCurrentUpdate = action(async (formData: FormData) => {
     if (formData.get("Next") !== null) {
       const result = await advanceCurrentPerson({
         supabase,
@@ -112,7 +101,7 @@ export default function StandupMeetingComponent() {
       });
     }
     return undefined;
-  });
+  }, "changeCurrentUpdate");
 
   const sortedPeople = createMemo(
     () => {
@@ -213,7 +202,7 @@ export default function StandupMeetingComponent() {
           </div>
         }
       >
-        <Form>
+        <form action={changeCurrentUpdate} method="post">
           <For each={sortedPeople()}>
             {(person) => {
               const thisPersonUpdate = () =>
@@ -263,7 +252,7 @@ export default function StandupMeetingComponent() {
               </>
             )}
           </div>
-        </Form>
+        </form>
       </Show>
     </div>
   );
