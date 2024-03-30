@@ -1,21 +1,22 @@
 {
-  "name": "my-qwik-basic-starter",
+  "name": "open-standup",
   "description": "App with Routing built-in (recommended)",
   "engines": {
-    "node": "^18.0.0"
+    "node": "^20.0.0"
   },
   "private": true,
   "scripts": {
     "lint": "eslint **/src/**/*.ts*",
     "fmt": "prettier --write .",
-    "fmt.check": "prettier --check ."
+    "fmt.check": "prettier --check .",
+    "supabase-start": "supabase start"
   },
   "devDependencies": {
-    "@types/eslint": "8.44.0",
-    "@typescript-eslint/eslint-plugin": "5.61.0",
-    "@typescript-eslint/parser": "5.61.0",
-    "eslint": "8.44.0",
-    "eslint-plugin-qwik": "1.2.6"
-  },
-  "dependencies": {}
+    "@types/eslint": "8.56.6",
+    "@typescript-eslint/eslint-plugin": "7.4.0",
+    "@typescript-eslint/parser": "7.4.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-qwik": "1.5.1",
+    "supabase": "1.151.1"
+  }
 }

@@ -7,38 +7,36 @@ import {
 } from "@angular/core";
 import { RealtimeChannel, createClient } from "@supabase/supabase-js";
 import { environment } from "../environment";
-import { QueryClientService, UseQuery } from "@ngneat/query";
+import { injectQuery, injectQueryClient } from "@ngneat/query";
 import { combineLatest, map, from } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import {
   resetStandup,
   advanceCurrentPerson,
   subscribeToStandupChange,
-  Database,
   getMeetingState,
   defaultMeetingState,
 } from "open-standup-shared";
 
+const supabase = createClient(
+  environment.supabaseUrl,
+  environment.supabaseAnonKey,
+);
 @Injectable({
   providedIn: "root",
 })
 export class SupabaseService implements OnDestroy {
-  private supabase = createClient<Database>(
-    environment.supabaseUrl,
-    environment.supabaseAnonKey,
-  );
-  private useQuery = inject(UseQuery);
   participantCount = signal(0);
-  queryClient = inject(QueryClientService);
+  queryClient = injectQueryClient();
+  query = injectQuery();
   sub?: RealtimeChannel;
 
   constructor() {
     const platformId = inject(PLATFORM_ID);
     if (isPlatformBrowser(platformId)) {
       this.sub = subscribeToStandupChange({
-        supabase: this.supabase,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        queryClient: this.queryClient as any,
+        supabase: supabase,
+        queryClient: this.queryClient,
         onParticipantCountChange: (count) => {
           this.participantCount.set(count);
         },
@@ -47,21 +45,21 @@ export class SupabaseService implements OnDestroy {
   }
 
   getSeries(id: string) {
-    const updatesQuery$ = this.useQuery({
+    const updatesQuery$ = this.query({
       queryKey: ["standup-series", id, "updates"],
       queryFn: () =>
         from(
-          this.supabase
+          supabase
             .from("updates")
             .select("*")
             .eq("meeting_id", id)
             .order("id", { ascending: true }),
         ),
     });
-    const seriesQuery$ = this.useQuery({
+    const seriesQuery$ = this.query({
       queryKey: ["standup-series", id, "meeting"],
       queryFn: () =>
-        from(this.supabase.from("meetings").select("*").eq("id", id).single()),
+        from(supabase.from("meetings").select("*").eq("id", id).single()),
     });
     return combineLatest(updatesQuery$.result$, seriesQuery$.result$).pipe(
       map(([a, b]) => {
@@ -93,9 +91,8 @@ export class SupabaseService implements OnDestroy {
     advanceCurrentPerson({
       standupId,
       finishUpdate,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      queryClient: this.queryClient as any,
-      supabase: this.supabase,
+      queryClient: this.queryClient,
+      supabase,
     });
   }
   resetStandup({
@@ -106,11 +103,10 @@ export class SupabaseService implements OnDestroy {
     standupId: string;
   }) {
     resetStandup({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      queryClient: this.queryClient as any,
+      queryClient: this.queryClient,
       randomizeOrder: randomize,
       standupId,
-      supabase: this.supabase,
+      supabase,
     });
   }
 
