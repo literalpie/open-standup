@@ -61,7 +61,7 @@
             "scripts": [],
             "server": "src/main.server.ts",
             "prerender": true,
-            "ssr": "server.ts"
+            "ssr": true
           },
           "configurations": {
             "production": {
@@ -75,6 +75,12 @@
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
                   "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environment.ts",
+                  "with": "src/environment.prod.ts"
                 }
               ],
               "outputHashing": "all"
@@ -91,10 +97,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "open-standup-angular:build:production"
+              "buildTarget": "open-standup-angular:build:production"
             },
             "development": {
-              "browserTarget": "open-standup-angular:build:development"
+              "buildTarget": "open-standup-angular:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -102,7 +108,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "open-standup-angular:build"
+            "buildTarget": "open-standup-angular:build"
           }
         }
       }
