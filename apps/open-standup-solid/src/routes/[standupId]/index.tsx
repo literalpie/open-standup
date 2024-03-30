@@ -131,7 +131,7 @@ export default function StandupMeetingComponent() {
   return (
     <div class="p-3">
       <Show when={params["standupId"] === "1"}>
-        <h2 class="font-bold text-lg p-1">Welcome!</h2>
+        <h2 class="p-1 text-lg font-bold">Welcome!</h2>
         <p>
           This is Open Standup. An app to help teams have quick and simple sync
           meetings.
@@ -162,10 +162,10 @@ export default function StandupMeetingComponent() {
         <Show
           when={!seriesQuery?.isLoading()}
           fallback={
-            <div class="animate-pulse flex w-1/5 h-4 bg-slate-200 rounded" />
+            <div class="flex h-4 w-1/5 animate-pulse rounded bg-slate-200" />
           }
         >
-          <h2 class="font-semibold text-lg">
+          <h2 class="text-lg font-semibold">
             {seriesQuery?.seriesState()?.title}
           </h2>
         </Show>
@@ -176,7 +176,7 @@ export default function StandupMeetingComponent() {
           Edit
         </A>
         <span
-          class="flex-grow flex gap-1 basis-12 justify-end"
+          class="flex flex-grow basis-12 justify-end gap-1"
           aria-label={`There are ${meetingParticipantsCount()} participant(s) currently viewing this meeting.`}
           title={`There are ${meetingParticipantsCount()} participant(s) currently viewing this meeting.`}
         >
@@ -190,14 +190,14 @@ export default function StandupMeetingComponent() {
         when={!seriesQuery?.isLoading()}
         fallback={
           <div>
-            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
-            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
-            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
-            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
-            <div class="animate-pulse h-5 bg-slate-200 rounded m-1" />
+            <div class="m-1 h-5 animate-pulse rounded bg-slate-200" />
+            <div class="m-1 h-5 animate-pulse rounded bg-slate-200" />
+            <div class="m-1 h-5 animate-pulse rounded bg-slate-200" />
+            <div class="m-1 h-5 animate-pulse rounded bg-slate-200" />
+            <div class="m-1 h-5 animate-pulse rounded bg-slate-200" />
             <div class="flex">
-              <span class="inline animate-pulse w-1/2 h-10 bg-slate-200 rounded m-1" />
-              <span class="inline animate-pulse w-1/2 h-10 bg-slate-200 rounded m-1" />
+              <span class="m-1 inline h-10 w-1/2 animate-pulse rounded bg-slate-200" />
+              <span class="m-1 inline h-10 w-1/2 animate-pulse rounded bg-slate-200" />
             </div>
           </div>
         }
@@ -233,7 +233,7 @@ export default function StandupMeetingComponent() {
               );
             }}
           </For>
-          <div class="pt-3 flex gap-1">
+          <div class="flex gap-1 pt-3">
             {seriesQuery?.meetingState().allDone ? (
               <>
                 <div class="flex-grow">All Done!</div>
@@ -246,7 +246,7 @@ export default function StandupMeetingComponent() {
                 <button class="btn btn-neutral flex-grow" name="Next">
                   Next
                 </button>
-                <button class="btn flex-grow btn-outline" name="Skip">
+                <button class="btn btn-outline flex-grow" name="Skip">
                   Skip
                 </button>
               </>

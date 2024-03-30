@@ -44,7 +44,7 @@ export default function PersonStatus(props: {
   });
   return (
     <div
-      class="transition px-2 duration-500 flex justify-between"
+      class="flex justify-between px-2 transition duration-500"
       classList={{
         "bg-su-complete dark:bg-su-complete-dark ": props.done,
         "bg-su-in-progress dark:bg-su-in-progress-dark ": props.current,
@@ -53,7 +53,7 @@ export default function PersonStatus(props: {
     >
       <div class="px-1">{props.name}</div>
       <div
-        class="transition-opacity duration-500 px-1"
+        class="px-1 transition-opacity duration-500"
         classList={{
           "opacity-0": durationLabel() === undefined,
         }}

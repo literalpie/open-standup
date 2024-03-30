@@ -12,7 +12,7 @@ export default component$(() => {
         <div class="w-full bg-slate-100 px-2">{p2pBanner}</div>
       ) : undefined}
       <main class="flex justify-center">
-        <section class="flex-grow p-2 max-w-4xl">
+        <section class="max-w-4xl flex-grow p-2">
           <Slot />
         </section>
       </main>

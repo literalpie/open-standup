@@ -13,7 +13,7 @@ export default component$(() => {
     <>
       {seriesState && seriesState.people.length > 0 ? (
         <div>
-          <h2 class="font-bold text-lg text-center meeting-title flex justify-center items-center gap-2">
+          <h2 class="meeting-title flex items-center justify-center gap-2 text-center text-lg font-bold">
             <div>{seriesState.title}</div>
             <Link
               class="edit-button btn btn-sm btn-outline"

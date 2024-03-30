@@ -53,7 +53,7 @@ export const StandupComponent = component$<{
           />
         );
       })}
-      <div class="pt-3 flex gap-1">
+      <div class="flex gap-1 pt-3">
         {standupState.allDone ? (
           <>
             <div class="flex-grow">All Done!</div>
@@ -88,7 +88,7 @@ export const StandupComponent = component$<{
               Next
             </button>
             <button
-              class="btn flex-grow btn-outline"
+              class="btn btn-outline flex-grow"
               onClick$={setNextOrderPosition}
             >
               Skip

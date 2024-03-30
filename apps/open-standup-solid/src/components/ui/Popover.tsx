@@ -9,7 +9,7 @@ export function Popover(props: { label: string; children: JSXElement }) {
         <span class="h-5">⌄</span>
       </KPopover.Trigger>
       <KPopover.Portal>
-        <KPopover.Content class="menu bg-base-200 w-56 rounded-box p-2 animate-popover-fade-out data-[expanded]:animate-popover-fade-in">
+        <KPopover.Content class="menu bg-base-200 rounded-box animate-popover-fade-out data-[expanded]:animate-popover-fade-in w-56 p-2">
           <KPopover.Arrow />
           {props.children}
         </KPopover.Content>

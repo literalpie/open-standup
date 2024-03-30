@@ -5,3 +5,16 @@
 dist
 node_modules
 pnpm-lock.yaml
+tmp
+
+supabase/.branches
+supabase/.temp
+
+apps/open-standup-qwik/server
+
+**/.solid
+**/.vercel
+**/.vinxi
+
+**/.vscode
+**/.angular

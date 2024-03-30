@@ -62,7 +62,7 @@ export function SeriesForm(props: {
       <ul class="participant-list">
         <For each={editingState.people}>
           {(partic) => (
-            <li class="p-1 w-1/2 flex justify-between items-center">
+            <li class="flex w-1/2 items-center justify-between p-1">
               <div>{partic.name}</div>
               <button
                 aria-label="Remove participant"
@@ -79,7 +79,7 @@ export function SeriesForm(props: {
                   );
                 }}
                 type="button"
-                class="btn btn-xs btn-outline btn-ghost btn-circle border-hidden hover:bg-inherit hover:text-inherit stroke-base-content fill-base-content text-lg font-light"
+                class="btn btn-xs btn-outline btn-ghost btn-circle stroke-base-content fill-base-content border-hidden text-lg font-light hover:bg-inherit hover:text-inherit"
               >
                 X
               </button>
@@ -87,10 +87,10 @@ export function SeriesForm(props: {
           )}
         </For>
         {newPartic()?.length ? (
-          <li class="text-opacity-60 text-base-content p-1">{newPartic()}</li>
+          <li class="text-base-content p-1 text-opacity-60">{newPartic()}</li>
         ) : null}
       </ul>
-      <span class="flex gap-2 align">
+      <span class="align flex gap-2">
         <div class="form-control">
           <label for="new-participant-input" class="label">
             New Participant:
@@ -140,7 +140,7 @@ export function SeriesForm(props: {
         {isEditing() ? "Update Standup" : "Create Standup"}
       </button>
       {isEditing() && (
-        <p class="font-light m-0">
+        <p class="m-0 font-light">
           Updating a standup meeting will reset the state of the in-progress
           meeting.
         </p>

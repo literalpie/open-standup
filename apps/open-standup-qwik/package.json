@@ -27,7 +27,6 @@
     "node-fetch": "3.3.2",
     "open-standup-shared": "workspace:^",
     "postcss": "^8.4.38",
-    "prettier": "3.2.5",
     "supabase": "1.151.1",
     "supabase-auth-helpers-qwik": "^0.0.3",
     "tailwindcss": "^3.4.3",
