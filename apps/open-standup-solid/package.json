@@ -35,6 +35,6 @@
     "vite-plugin-solid-svg": "0.8.1"
   },
   "engines": {
-    "node": ">=20.0"
+    "node": "^20.0.0"
   }
 }
