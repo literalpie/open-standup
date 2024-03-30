@@ -31,20 +31,20 @@ export const StandupFormComponent = component$<{
             />
           );
         })}
-      <div class="pt-3 flex gap-1">
+      <div class="flex gap-1 pt-3">
         {standupState.allDone ? (
           <>
             <div class="flex-grow">All Done!</div>
-            <button class="btn flex-grow btn-neutral" name="Reset">
+            <button class="btn btn-neutral flex-grow" name="Reset">
               Reset
             </button>
           </>
         ) : (
           <>
-            <button class="btn flex-grow btn-neutral" name="Next">
+            <button class="btn btn-neutral flex-grow" name="Next">
               Next
             </button>
-            <button class="btn flex-grow btn-outline" name="Skip">
+            <button class="btn btn-outline flex-grow" name="Skip">
               Skip
             </button>
           </>

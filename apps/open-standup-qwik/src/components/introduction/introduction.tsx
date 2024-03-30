@@ -8,7 +8,7 @@ export const Introduction = component$(() => {
   const isP2P = location.url.href.includes("p2p");
   return (
     <>
-      <h2 class="font-bold text-lg p-1">Welcome!</h2>
+      <h2 class="p-1 text-lg font-bold">Welcome!</h2>
       <p>
         This is Open Standup. An app to help teams have quick and simple sync
         meetings.

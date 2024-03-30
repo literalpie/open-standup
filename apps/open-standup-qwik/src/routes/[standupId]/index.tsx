@@ -290,7 +290,7 @@ export default component$(() => {
   return (
     <div class="flex flex-col gap-1">
       {location.params["standupId"] === "1" ? <Introduction /> : undefined}
-      <h2 class="font-bold text-lg text-center meeting-title flex justify-center items-center gap-2">
+      <h2 class="meeting-title flex items-center justify-center gap-2 text-center text-lg font-bold">
         <div>{loaderSeriesState.value.title}</div>
         <Link
           class="edit-button btn btn-sm btn-outline"

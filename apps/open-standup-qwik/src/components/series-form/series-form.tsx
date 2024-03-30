@@ -80,7 +80,7 @@ export const SeriesForm = component$<{
           {editingState.people.map((partic) => (
             <li
               key={partic.id}
-              class="p-1 w-1/2 flex justify-between items-center"
+              class="flex w-1/2 items-center justify-between p-1"
             >
               <div>{partic.name}</div>
               <button
@@ -96,19 +96,19 @@ export const SeriesForm = component$<{
                   }));
                 }}
                 type="button"
-                class="btn btn-xs btn-outline btn-ghost btn-circle border-hidden hover:bg-inherit hover:text-inherit stroke-base-content fill-base-content text-lg font-light"
+                class="btn btn-xs btn-outline btn-ghost btn-circle stroke-base-content fill-base-content border-hidden text-lg font-light hover:bg-inherit hover:text-inherit"
               >
                 X
               </button>
             </li>
           ))}
           {newPartic.value?.length ? (
-            <li class="text-opacity-60 text-base-content p-1">
+            <li class="text-base-content p-1 text-opacity-60">
               {newPartic.value}
             </li>
           ) : null}
         </ul>
-        <span class="flex gap-2 align">
+        <span class="align flex gap-2">
           <div class="form-control">
             <label for="new-participant-input" class="label">
               New Participant:

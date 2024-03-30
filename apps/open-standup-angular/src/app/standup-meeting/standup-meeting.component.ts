@@ -11,51 +11,54 @@ import { map, mergeMap } from "rxjs";
   imports: [CommonModule],
   template: `
     @if (isLoading()) {
-    <div>
-      <div class="animate-pulse h-5 bg-slate-200 rounded m-1"></div>
-      <div class="animate-pulse h-5 bg-slate-200 rounded m-1"></div>
-      <div class="animate-pulse h-5 bg-slate-200 rounded m-1"></div>
-      <div class="animate-pulse h-5 bg-slate-200 rounded m-1"></div>
-      <div class="animate-pulse h-5 bg-slate-200 rounded m-1"></div>
-      <div class="flex">
-        <span
-          class="inline animate-pulse w-1/2 h-10 bg-slate-200 rounded m-1"
-        ></span>
-        <span
-          class="inline animate-pulse w-1/2 h-10 bg-slate-200 rounded m-1"
-        ></span>
+      <div>
+        <div class="m-1 h-5 animate-pulse rounded bg-slate-200"></div>
+        <div class="m-1 h-5 animate-pulse rounded bg-slate-200"></div>
+        <div class="m-1 h-5 animate-pulse rounded bg-slate-200"></div>
+        <div class="m-1 h-5 animate-pulse rounded bg-slate-200"></div>
+        <div class="m-1 h-5 animate-pulse rounded bg-slate-200"></div>
+        <div class="flex">
+          <span
+            class="m-1 inline h-10 w-1/2 animate-pulse rounded bg-slate-200"
+          ></span>
+          <span
+            class="m-1 inline h-10 w-1/2 animate-pulse rounded bg-slate-200"
+          ></span>
+        </div>
       </div>
-    </div>
     } @else {
-    <h1>{{ seriesState()?.title }}</h1>
-    @for (person of sortedPeople() ;track person) {
-    <div
-      [ngClass]="{
-        'px-2 duration-500 flex justify-between': true,
-        'bg-su-complete': getUpdate(person.id)?.done,
-        'bg-su-in-progress': getUpdate(person.id)?.startTime !== undefined
-      }"
-    >
-      <div class="px-1">{{ person.name }}</div>
-    </div>
-    } @empty {
-    <div>Empty Meeting</div>
-    }
-    <div class="pt-3 flex gap-1">
-      @if(meetingState()?.allDone) {
-      <div class="flex-grow">All Done!</div>
-      <button (click)="handleResetClick()" class="btn btn-neutral flex-grow">
-        Reset
-      </button>
-      } @else {
-      <button (click)="handleNextClick()" class="btn btn-neutral flex-grow">
-        Next
-      </button>
-      <button (click)="handleSkipClick()" class="btn btn-outline flex-grow">
-        Skip
-      </button>
+      <h1>{{ seriesState()?.title }}</h1>
+      @for (person of sortedPeople(); track person) {
+        <div
+          [ngClass]="{
+            'flex justify-between px-2 duration-500': true,
+            'bg-su-complete': getUpdate(person.id)?.done,
+            'bg-su-in-progress': getUpdate(person.id)?.startTime !== undefined
+          }"
+        >
+          <div class="px-1">{{ person.name }}</div>
+        </div>
+      } @empty {
+        <div>Empty Meeting</div>
       }
-    </div>
+      <div class="flex gap-1 pt-3">
+        @if (meetingState()?.allDone) {
+          <div class="flex-grow">All Done!</div>
+          <button
+            (click)="handleResetClick()"
+            class="btn btn-neutral flex-grow"
+          >
+            Reset
+          </button>
+        } @else {
+          <button (click)="handleNextClick()" class="btn btn-neutral flex-grow">
+            Next
+          </button>
+          <button (click)="handleSkipClick()" class="btn btn-outline flex-grow">
+            Skip
+          </button>
+        }
+      </div>
     }
   `,
   styles: [],
@@ -79,11 +82,10 @@ export class StandupMeetingComponent {
   });
   seriesState = computed(() => this.state()?.seriesState);
   meetingState = computed(() => this.state()?.meetingState);
-  sortedPeople = computed(
-    () =>
-      this.seriesState()
-        ?.people.map((p) => ({ ...p }))
-        .sort((a, b) => (a.order ?? a.id) - (b.order ?? b.id)),
+  sortedPeople = computed(() =>
+    this.seriesState()
+      ?.people.map((p) => ({ ...p }))
+      .sort((a, b) => (a.order ?? a.id) - (b.order ?? b.id)),
   );
 
   getPerson(id: string) {

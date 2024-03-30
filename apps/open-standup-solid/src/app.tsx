@@ -16,9 +16,9 @@ export default function App() {
         <MetaProvider>
           <Title>SolidStart - Basic</Title>
           <QueryClientProvider client={queryClient}>
-            <header class="p-2 border-b-2 sticky top-0 bg-base-100 flex flex-row justify-between">
+            <header class="bg-base-100 sticky top-0 flex flex-row justify-between border-b-2 p-2">
               <div class="w-24" />
-              <h1 class="font-bold text-xl">
+              <h1 class="text-xl font-bold">
                 <A href="/">Open Standup</A>
               </h1>
               <div class="w-24">
@@ -26,7 +26,7 @@ export default function App() {
               </div>
             </header>
             <main class="flex justify-center">
-              <div class="flex-grow p-2 max-w-4xl">
+              <div class="max-w-4xl flex-grow p-2">
                 <Suspense fallback={"loading"}>{props.children}</Suspense>
               </div>
             </main>

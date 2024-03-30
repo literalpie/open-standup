@@ -31,7 +31,7 @@ export default component$(() => {
     <div>
       <Introduction />
       <section class="py-4">
-        <h2 class="font-bold text-lg text-center">{seriesState.title}</h2>
+        <h2 class="text-center text-lg font-bold">{seriesState.title}</h2>
         <StandupComponent
           seriesState={seriesState}
           standupState={standupState}

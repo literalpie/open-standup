@@ -75,7 +75,7 @@ export default component$(() => {
 
   return (
     <>
-      <section class="p-2 border-2 m-1">
+      <section class="m-1 border-2 p-2">
         {numValue.value.data ? (
           <p>The number is {numValue.value.data?.counter}</p>
         ) : undefined}
