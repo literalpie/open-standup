@@ -70,8 +70,8 @@ export const SeriesForm = component$<{
             placeholder="Name your standup"
             class="input input-bordered"
             id="standup-title-input"
-            onChange$={(changeEv) => {
-              editingState.title = changeEv.target.value;
+            onChange$={(changeEv: InputEvent) => {
+              editingState.title = (changeEv.target as HTMLInputElement)?.value;
             }}
             type="text"
           />
@@ -139,7 +139,7 @@ export const SeriesForm = component$<{
               checked={editingState.randomizeOnStart}
               onChange$={(changeEv) => {
                 editingState.randomizeOnStart =
-                  changeEv.target.checked ?? false;
+                  (changeEv.target as HTMLInputElement)?.checked ?? false;
               }}
             />
             <span class="label-text">Randomize Order On Start</span>

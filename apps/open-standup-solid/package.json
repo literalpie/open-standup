@@ -14,7 +14,7 @@
     "postcss": "8.4.38",
     "typescript": "^5.4.3",
     "vinxi": "0.3.10",
-    "vite": "^5.1.6",
+    "vite": "^5.2.7",
     "vite-tsconfig-paths": "4.3.2"
   },
   "dependencies": {
@@ -25,7 +25,7 @@
     "@solidjs/meta": "^0.29.3",
     "@solidjs/router": "^0.13.1",
     "@solidjs/start": "1.0.0-rc.0",
-    "@supabase/supabase-js": "2.39.8",
+    "@supabase/supabase-js": "2.41.1",
     "@tailwindcss/typography": "^0.5.12",
     "@tanstack/solid-query": "5.28.9",
     "daisyui": "4.9.0",
