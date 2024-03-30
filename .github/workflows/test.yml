@@ -20,6 +20,7 @@ jobs:
       - name: Install
         run: |
           cd ${{ github.workspace }}
+          corepack enable pnpm
           pnpm install
 
       - name: Format
