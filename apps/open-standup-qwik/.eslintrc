@@ -2,6 +2,7 @@
     "rules": {
         "qwik/use-method-usage": ["error"],
         "qwik/jsx-key": ["error"],
-        "qwik/valid-lexical-scope": false
+        "qwik/valid-lexical-scope": 0,
+        "qwik/no-use-visible-task": 0
     }
 }
