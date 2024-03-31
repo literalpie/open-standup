@@ -1,0 +1,11 @@
+{
+  "name": "open-standup-solid",
+  "$schema": "../../node_modules/nx/schemas/nx-schema.json",
+  "targets": {
+    "build": {
+      "outputs": ["{projectRoot}/.vinxi", "{projectRoot}/.vercel"],
+      "dependsOn": ["^build"],
+      "cache": true
+    }
+  }
+}

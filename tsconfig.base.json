@@ -26,6 +26,9 @@
       "open-standup-shared": ["./libs/open-standup-shared/src"]
     }
   },
-
-  "references": [{ "path": "./libs/open-standup-shared/tsconfig.json" }]
+  "references": [
+    {
+      "path": "./libs/open-standup-shared/tsconfig.json"
+    }
+  ]
 }

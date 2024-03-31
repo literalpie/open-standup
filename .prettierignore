@@ -18,3 +18,4 @@ apps/open-standup-qwik/server
 
 **/.vscode
 **/.angular
+/.nx/cache
