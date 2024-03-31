@@ -9,7 +9,7 @@ import { For, createResource } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { supabase } from "~/shared/supabase";
 
-export const getStandupUpdates = ({ standupId }: { standupId: string }) =>
+const getStandupUpdates = ({ standupId }: { standupId: string }) =>
   supabase
     .from("meetings")
     .select(

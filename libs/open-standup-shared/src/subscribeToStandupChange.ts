@@ -89,9 +89,8 @@ export const subscribeToStandupChange = ({
         const allQueries = queryClient.getQueriesData<SupabaseMeetingState>({
           queryKey: ["standup-series"],
         });
-        const foundMeeting = allQueries.find(
-          (q) =>
-            q[1]?.data?.meeting_instances.find((i) => i.id === updatedMeeting),
+        const foundMeeting = allQueries.find((q) =>
+          q[1]?.data?.meeting_instances.find((i) => i.id === updatedMeeting),
         )?.[1];
         if (!foundMeeting?.data?.id) {
           return;

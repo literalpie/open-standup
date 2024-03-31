@@ -1,13 +1,7 @@
 insert into
-counter (counter)
+meetings (title)
 values
-(1);
-
--- IDK why, but seeding these initial values causes problems. When a creating a new meeting, it is given an ID that conflicts with this.
--- insert into
--- meetings (id, title)
--- values
--- (1, 'Demo');
+('Test Meeting');
 
 insert into
 meeting_instances (id, meeting_id)
