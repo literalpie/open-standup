@@ -109,7 +109,7 @@ export default function StandupMeetingComponent() {
     {
       equals: (a, b) => {
         return (
-          a.length === b.length &&
+          a?.length === b?.length &&
           (a?.every((p, i) => {
             return (
               a !== undefined &&

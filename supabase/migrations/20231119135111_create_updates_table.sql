@@ -14,3 +14,5 @@ create table
 create trigger handle_updated_at before
 update on updates for each row
 execute function moddatetime ('updated_at');
+
+alter publication supabase_realtime add table public.updates;

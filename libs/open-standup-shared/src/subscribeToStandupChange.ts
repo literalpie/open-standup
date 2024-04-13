@@ -44,36 +44,6 @@ export const subscribeToStandupChange = ({
   onParticipantCountChange: (count: number) => void;
 }) => {
   const channel = supabase.channel("updates");
-  // const channelInstances = supabase.channel("meeting_instances");
-
-  // const subInstances = channelInstances
-  //   .on(
-  //     "postgres_changes",
-  //     { schema: "public", event: "INSERT", table: "meeting_instances" },
-  //     async (supaChange) => {
-  //       console.log("instance change", supaChange, [
-  //         "standup-series",
-  //         String(supaChange.new.meeting_id),
-  //         "updates",
-  //       ]);
-  //       await queryClient.resetQueries({
-  //         queryKey: [
-  //           "standup-series",
-  //           String(supaChange.new.meeting_id),
-  //           "updates",
-  //         ],
-  //       });
-  //       console.log(
-  //         "client new value",
-  //         queryClient.getQueryData([
-  //           "standup-series",
-  //           String(supaChange.new.meeting_id),
-  //           "updates",
-  //         ]),
-  //       );
-  //     },
-  //   )
-  // .subscribe();
   const sub = channel
     .on("presence", { event: "sync" }, () => {
       const newState = channel.presenceState();
@@ -85,7 +55,6 @@ export const subscribeToStandupChange = ({
       (supaChange) => {
         console.log("change", supaChange);
         const updatedMeeting = supaChange.new.meeting_instance_id;
-        // queryClient.getQueryData<>
         const allQueries = queryClient.getQueriesData<SupabaseMeetingState>({
           queryKey: ["standup-series"],
         });
@@ -102,52 +71,6 @@ export const subscribeToStandupChange = ({
             "updates",
           ],
         });
-        // queryClient.setQueryData<SupabaseMeetingState>(
-        //   ["standup-series", String(foundMeeting?.data?.id), "updates"],
-        //   (oldData) => {
-        //     console.log("old data", oldData);
-        //     if (!oldData?.data) {
-        //       return oldData;
-        //     }
-        //     const newInstances = oldData.data.meeting_instances.map(
-        //       (instance) => {
-        // /* Something is wrong with how this is filtering. Things are staying in the array even though the IDs are equal. */
-        //         const filteredUpdates = instance.updates.filter((u) => {
-        //           console.log(
-        //             "equal",
-        //             u.person_id,
-        //             supaChange.new.person_id,
-        //             u.person_id != supaChange.new.person_id,
-        //           );
-        //           return u.person_id != supaChange.new.person_id;
-        //         });
-        //         console.log("filteredUpdates", filteredUpdates);
-        //         const updatedUpdates = [...filteredUpdates, supaChange.new];
-        //         return instance.id === +updatedMeeting
-        //           ? {
-        //               ...instance,
-        //               updates: updatedUpdates,
-        //             }
-        //           : instance;
-        //       },
-        //     );
-        //     console.log("newInstances", newInstances);
-        //     return {
-        //       ...oldData,
-        //       data: {
-        //         ...oldData?.data,
-        //         meeting_instances: newInstances,
-        //       },
-        //       // oldData?.data..map((d) => {
-        //       //   if (d.id === supaChange.new.id) {
-        //       //     return supaChange.new;
-        //       //   } else {
-        //       //     return d;
-        //       //   }
-        //       // }) ?? [],
-        //     } as SupabaseMeetingState;
-        //   },
-        // );
       },
     )
     .subscribe((status) => {
