@@ -1,6 +1,7 @@
 {
   "name": "open-standup-qwik",
   "description": "App with Routing built-in (recommended)",
+  "type": "module",
   "engines": {
     "node": "^20.0.0"
   },
@@ -19,27 +20,27 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@builder.io/qwik": "~1.5.1",
-    "@builder.io/qwik-city": "~1.5.1",
-    "@supabase/supabase-js": "2.41.1",
-    "@types/node": "^20.12.2",
-    "autoprefixer": "10.4.19",
+    "@builder.io/qwik": "~1.9.0",
+    "@builder.io/qwik-city": "~1.9.0",
+    "@supabase/supabase-js": "2.45.4",
+    "@types/node": "^22.5.5",
+    "autoprefixer": "10.4.20",
     "node-fetch": "3.3.2",
     "open-standup-shared": "workspace:^",
-    "postcss": "^8.4.38",
-    "supabase": "1.151.1",
+    "postcss": "^8.4.47",
+    "supabase": "1.192.5",
     "supabase-auth-helpers-qwik": "^0.0.3",
-    "tailwindcss": "^3.4.3",
-    "typescript": "5.4.3",
-    "vercel": "^33.6.2",
-    "vite": "^5.2.7",
-    "vite-tsconfig-paths": "^4.3.2"
+    "tailwindcss": "^3.4.12",
+    "typescript": "5.5.4",
+    "vercel": "^37.5.3",
+    "vite": "^5.4.7",
+    "vite-tsconfig-paths": "^5.0.1"
   },
   "dependencies": {
     "@syncedstore/core": "^0.6.0",
-    "daisyui": "^4.9.0",
+    "daisyui": "^4.12.10",
     "y-indexeddb": "^9.0.12",
     "y-webrtc": "^10.3.0",
-    "yjs": "^13.6.14"
+    "yjs": "^13.6.19"
   }
 }
