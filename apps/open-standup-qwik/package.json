@@ -27,7 +27,7 @@
     "node-fetch": "3.3.2",
     "open-standup-shared": "workspace:^",
     "postcss": "^8.4.38",
-    "supabase": "1.151.1",
+    "supabase": "1.192.5",
     "supabase-auth-helpers-qwik": "^0.0.3",
     "tailwindcss": "^3.4.3",
     "typescript": "5.4.3",

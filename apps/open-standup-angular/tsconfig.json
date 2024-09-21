@@ -4,6 +4,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "declaration": false
   },
