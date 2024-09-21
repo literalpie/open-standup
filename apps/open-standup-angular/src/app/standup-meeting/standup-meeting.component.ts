@@ -33,7 +33,7 @@ import { map, mergeMap } from "rxjs";
           [ngClass]="{
             'flex justify-between px-2 duration-500': true,
             'bg-su-complete': getUpdate(person.id)?.done,
-            'bg-su-in-progress': getUpdate(person.id)?.startTime !== undefined
+            'bg-su-in-progress': getUpdate(person.id)?.startTime !== undefined,
           }"
         >
           <div class="px-1">{{ person.name }}</div>

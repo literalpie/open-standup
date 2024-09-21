@@ -96,7 +96,7 @@ export function SeriesForm(props: {
             New Participant:
           </label>
           <input
-            class="input input-bordered "
+            class="input input-bordered"
             id="new-participant-input"
             type="text"
             value={newPartic() ?? ""}
