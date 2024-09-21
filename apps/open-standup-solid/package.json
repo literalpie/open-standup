@@ -9,13 +9,13 @@
   },
   "type": "module",
   "devDependencies": {
-    "@types/node": "20.12.2",
+    "@types/node": "22.5.5",
     "esbuild": "^0.23.1",
     "eslint": "9.11.0",
     "globals": "15.9.0",
     "open-standup-shared": "workspace:^",
-    "postcss": "8.4.38",
-    "typescript": "^5.4.3",
+    "postcss": "8.4.47",
+    "typescript": "^5.5.4",
     "vinxi": "0.4.3",
     "vite": "^5.2.7",
     "vite-tsconfig-paths": "4.3.2"
@@ -33,7 +33,7 @@
     "@tanstack/solid-query": "5.56.2",
     "daisyui": "4.12.10",
     "solid-js": "^1.8.22",
-    "tailwindcss": "3.4.3",
+    "tailwindcss": "3.4.12",
     "undici": "^6.19.8",
     "vite-plugin-solid-svg": "0.8.1"
   },

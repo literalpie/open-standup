@@ -10,7 +10,7 @@
   "dependencies": {
     "@supabase/supabase-js": "2.45.4",
     "@tanstack/query-core": "5.56.2",
-    "typescript": "5.4.3"
+    "typescript": "5.5.4"
   },
   "keywords": [],
   "author": "",
