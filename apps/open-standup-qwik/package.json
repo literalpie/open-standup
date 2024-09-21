@@ -21,7 +21,7 @@
   "devDependencies": {
     "@builder.io/qwik": "~1.5.1",
     "@builder.io/qwik-city": "~1.5.1",
-    "@supabase/supabase-js": "2.41.1",
+    "@supabase/supabase-js": "2.45.4",
     "@types/node": "^20.12.2",
     "autoprefixer": "10.4.19",
     "node-fetch": "3.3.2",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@syncedstore/core": "^0.6.0",
-    "daisyui": "^4.9.0",
+    "daisyui": "^4.12.10",
     "y-indexeddb": "^9.0.12",
     "y-webrtc": "^10.3.0",
     "yjs": "^13.6.14"
