@@ -75,17 +75,23 @@ export const useSyncedSeriesState = (seriesId: string) => {
 
   useTask$(({ track }) => {
     track(() => seriesState.title);
-    syncedSeriesState.value &&
-      syncedSeriesState.value.seriesState.title !== seriesState.title &&
-      (syncedSeriesState.value.seriesState.title = seriesState.title);
+    if (
+      syncedSeriesState.value &&
+      syncedSeriesState.value.seriesState.title !== seriesState.title
+    ) {
+      syncedSeriesState.value.seriesState.title = seriesState.title;
+    }
   });
   useTask$(({ track }) => {
     track(() => seriesState.randomizeOnStart);
-    syncedSeriesState.value &&
+    if (
+      syncedSeriesState.value &&
       syncedSeriesState.value.seriesState.randomizeOnStart !==
-        seriesState.randomizeOnStart &&
-      (syncedSeriesState.value.seriesState.randomizeOnStart =
-        seriesState.randomizeOnStart);
+        seriesState.randomizeOnStart
+    ) {
+      syncedSeriesState.value.seriesState.randomizeOnStart =
+        seriesState.randomizeOnStart;
+    }
   });
   useTask$(({ track }) => {
     track(() => seriesState.people);

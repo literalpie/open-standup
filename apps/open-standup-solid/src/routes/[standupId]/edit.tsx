@@ -36,7 +36,6 @@ export default function EditStandupMeetingComponent() {
   const standupId = params["standupId"];
   const standupQuery = useStandupState(params["standupId"]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const action = useAction(updateMeeting);
   return (
     <SeriesForm

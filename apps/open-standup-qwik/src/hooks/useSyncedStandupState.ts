@@ -143,9 +143,12 @@ export const useSyncedStandupState = (seriesState: StandupSeries) => {
       console.debug("changed keys", mepEvent.keysChanged);
       if (mepEvent.keysChanged.has("allDone")) {
         const synedAllDone = syncedStateStore.value?.standupState.allDone;
-        synedAllDone !== undefined &&
-          standupState.allDone !== synedAllDone &&
-          (standupState.allDone = synedAllDone!);
+        if (
+          synedAllDone !== undefined &&
+          standupState.allDone !== synedAllDone
+        ) {
+          standupState.allDone = synedAllDone!;
+        }
       }
       if (mepEvent.keysChanged.has("currentlyUpdating")) {
         standupState.currentlyUpdating =

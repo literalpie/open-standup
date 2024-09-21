@@ -4,17 +4,19 @@
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
-    "build.types": "tsc"
+    "build.types": "tsc",
+    "lint": "eslint"
   },
   "type": "module",
   "devDependencies": {
     "@types/node": "20.12.2",
     "esbuild": "^0.20.2",
-    "eslint-plugin-solid": "^0.13.2",
     "open-standup-shared": "workspace:^",
     "postcss": "8.4.38",
     "typescript": "^5.4.3",
     "vinxi": "0.3.10",
+    "eslint": "9.11.0",
+    "globals": "15.9.0",
     "vite": "^5.2.7",
     "vite-tsconfig-paths": "4.3.2"
   },
