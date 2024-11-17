@@ -1,11 +1,11 @@
 # Open Standup
 
-An app to help teams have quick and simple sync meetings
+An app to help teams have quick and simple sync meetings.
 
 ## Variations
 
 This app is mostly a playground for me to play around with different frameworks and technologies.
-For this reason, there are multiple duplicates of the app, with different implementations and behaviors
+For this reason, there are multiple duplicates of the app, with different implementations and behaviors.
 
 ### Solid
 
