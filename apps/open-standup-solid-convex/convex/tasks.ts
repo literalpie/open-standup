@@ -207,12 +207,10 @@ export const updateMeeting = mutation({
     randomizeOnStart: v.boolean(),
   },
   handler: async (ctx, args) => {
-    const now = Date.now();
-
     await ctx.db.patch(args.meetingId, {
       name: args.name,
       randomizeOnStart: args.randomizeOnStart,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
 
     const existing = await ctx.db
@@ -222,14 +220,10 @@ export const updateMeeting = mutation({
 
     const keptIds = new Set(args.people.map((p) => p.id).filter(Boolean));
 
-    // Delete removed people
     for (const person of existing) {
-      if (!keptIds.has(person._id)) {
-        await ctx.db.delete(person._id);
-      }
+      if (!keptIds.has(person._id)) await ctx.db.delete(person._id);
     }
 
-    // Upsert people
     for (const person of args.people) {
       if (person.id) {
         await ctx.db.patch(person.id, {
@@ -244,6 +238,39 @@ export const updateMeeting = mutation({
         });
       }
     }
+
+    const instance = await ctx.db
+      .query("meetingInstances")
+      .withIndex("by_meeting", (q) => q.eq("meetingId", args.meetingId))
+      .order("desc")
+      .first();
+
+    if (!instance) return args.meetingId;
+
+    const updates = await ctx.db
+      .query("updates")
+      .withIndex("by_meeting_instance", (q) =>
+        q.eq("meetingInstanceId", instance._id),
+      )
+      .collect();
+
+    const inProgress = updates.some((u) => !u.endedAt);
+    if (!inProgress) return args.meetingId;
+
+    for (const u of updates) await ctx.db.delete(u._id);
+    await ctx.db.delete(instance._id);
+
+    const people = await ctx.db
+      .query("people")
+      .withIndex("by_meeting", (q) => q.eq("meetingId", args.meetingId))
+      .collect();
+
+    await createInstanceWithUpdates(
+      ctx,
+      args.meetingId,
+      people,
+      args.randomizeOnStart,
+    );
 
     return args.meetingId;
   },
@@ -321,29 +348,41 @@ export const skipUpdate = mutation({
   },
 });
 
-/** Reset all updates and start the first person. */
+/** End current instance and start a new one. */
 export const resetAll = mutation({
   args: { meetingInstanceId: v.id("meetingInstances") },
   handler: async (ctx, args) => {
+    const instance = await ctx.db.get(args.meetingInstanceId);
+    if (!instance) throw new Error("Instance not found");
+
+    const meeting = await ctx.db.get(instance.meetingId);
+    if (!meeting) throw new Error("Meeting not found");
+
     const now = Date.now();
-    const updates = (
-      await ctx.db
-        .query("updates")
-        .withIndex("by_meeting_instance", (q) =>
-          q.eq("meetingInstanceId", args.meetingInstanceId),
-        )
-        .collect()
-    ).sort((a, b) => a.order - b.order);
 
-    for (const update of updates) {
-      await ctx.db.patch(update._id, {
-        startedAt: undefined,
-        endedAt: undefined,
-      });
+    const updates = await ctx.db
+      .query("updates")
+      .withIndex("by_meeting_instance", (q) =>
+        q.eq("meetingInstanceId", args.meetingInstanceId),
+      )
+      .collect();
+
+    for (const u of updates) {
+      if (!u.endedAt) {
+        await ctx.db.patch(u._id, { endedAt: now });
+      }
     }
 
-    if (updates.length > 0) {
-      await ctx.db.patch(updates[0]._id, { startedAt: now });
-    }
+    const people = await ctx.db
+      .query("people")
+      .withIndex("by_meeting", (q) => q.eq("meetingId", instance.meetingId))
+      .collect();
+
+    await createInstanceWithUpdates(
+      ctx,
+      instance.meetingId,
+      people,
+      meeting.randomizeOnStart,
+    );
   },
 });

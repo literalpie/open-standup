@@ -1,14 +1,10 @@
-import { useAction, useParams } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { SeriesForm, StandupSeriesNoId } from "~/components/SeriesForm";
 import { updateMeeting } from "~/shared/updateMeeting";
 import { useStandupState, SeriesState } from "~/shared/useStandupState";
-import { createMemo } from "solid-js";
+import { Show } from "solid-js";
 
-/** Map the real-time SeriesState into the form's expected shape. */
-function toFormSeries(
-  series: SeriesState | undefined,
-): StandupSeriesNoId | undefined {
-  if (!series) return undefined;
+function toFormSeries(series: SeriesState): StandupSeriesNoId {
   return {
     title: series.title,
     randomizeOnStart: series.randomizeOnStart,
@@ -24,16 +20,21 @@ export default function EditStandupMeetingComponent() {
   const params = useParams();
   const meetingId = params["standupId"];
   const standup = useStandupState(meetingId);
+  const navigate = useNavigate();
 
-  const action = useAction(updateMeeting);
-  const formSeries = createMemo(() => toFormSeries(standup.seriesState()));
+  const handleSubmit = async (formData: StandupSeriesNoId) => {
+    const id = await updateMeeting({ ...formData, id: meetingId });
+    navigate(`/${id}`);
+  };
 
   return (
-    <SeriesForm
-      onSubmit={(series) => {
-        action({ ...series, id: meetingId });
-      }}
-      initialSeries={formSeries()}
-    />
+    <Show when={standup.seriesState()} fallback={<div>Loading...</div>}>
+      {(series) => (
+        <SeriesForm
+          onSubmit={handleSubmit}
+          initialSeries={toFormSeries(series())}
+        />
+      )}
+    </Show>
   );
 }

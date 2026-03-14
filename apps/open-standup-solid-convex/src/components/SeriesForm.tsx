@@ -31,16 +31,12 @@ export function SeriesForm(props: {
     if (!newPartic()) {
       return;
     }
-    const maxId =
-      editingState.people
-        .map((p) => +p.id)
-        .sort((id, id2) => id - id2)
-        .at(-1) ?? 0;
+    const newId = `new-${Date.now()}`;
     setEditingState("people", (old) => [
       ...old,
       {
         name: newPartic()!,
-        id: String(maxId + 1),
+        id: newId,
         order: editingState.people.length,
       },
     ]);
@@ -51,7 +47,6 @@ export function SeriesForm(props: {
     <form
       class="flex flex-col gap-2"
       onSubmit={(event) => {
-        // don't refresh the page
         event.preventDefault();
         props.onSubmit(editingState);
       }}

@@ -1,8 +1,16 @@
-import { useAction } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 import { SeriesForm } from "~/components/SeriesForm";
 import { updateMeeting } from "~/shared/updateMeeting";
 
-export default function EditStandupMeetingComponent() {
-  const action = useAction(updateMeeting);
-  return <SeriesForm onSubmit={action} />;
+export default function NewStandupComponent() {
+  const navigate = useNavigate();
+
+  return (
+    <SeriesForm
+      onSubmit={async (formData) => {
+        const id = await updateMeeting(formData);
+        navigate(`/${id}`);
+      }}
+    />
+  );
 }
