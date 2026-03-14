@@ -1,0 +1,36 @@
+import { defineConfig } from "@solidjs/start/config";
+import tailwindcss from "@tailwindcss/vite";
+import solidSvg, { SolidSVGPluginOptions } from "vite-plugin-solid-svg";
+import tsconfigPaths from "vite-tsconfig-paths";
+
+const svgoConfig: SolidSVGPluginOptions = {
+    svgo: {
+      enabled: true,
+      svgoConfig: {
+        plugins: [
+          "preset-default",
+          {
+            name: "addClassesToSVGElement",
+            params: {
+              classNames: ["w-6", "h-6", "fill-base-content"],
+            },
+          },
+        ],
+      },
+    },
+  };
+  
+
+export default defineConfig({
+    vite: {
+        plugins: [
+            tailwindcss(),
+            solidSvg(svgoConfig), 
+            tsconfigPaths(),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ] as any
+    },
+    server: {
+      preset: "vercel",
+    },
+});

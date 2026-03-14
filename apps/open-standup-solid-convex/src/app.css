@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "daisyui";
+
+@theme {
+  --color-su-complete:  var(--complete);
+  --color-su-in-progress:  var(--in-progress);
+  --color-su-complete-dark:  var(--complete-dark);
+  --color-su-in-progress-dark:  var(--in-progress-dark);
+
+
+  --animate-popover-fade-in: popover-fade-in 20000ms;
+  --animate-popover-fade-out: popover-fade-out 20000ms;
+
+  @keyframes popover-fade-in {
+    0% {
+      opacity: 0;
+      scale: 60%;
+      transform-origin: var(--kb-popover-content-transform-origin);
+    }
+  }
+  @keyframes popover-fade-out {
+    100% {
+      opacity: 0;
+      scale: 60%;
+      transform-origin: var(--kb-popover-content-transform-origin);
+    }
+  }
+}
+
+:root {
+  --complete: #36d399;
+  --complete-dark: #206257;
+  --in-progress: #3abff8;
+  --in-progress-dark: #644e73;
+}
