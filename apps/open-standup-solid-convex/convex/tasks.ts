@@ -96,6 +96,83 @@ export const getLatestInstanceWithUpdates = query({
   },
 });
 
+/** Get all meeting instances with their completion status and duration. */
+export const getMeetingHistory = query({
+  args: { meetingId: v.id("meetings") },
+  handler: async (ctx, args) => {
+    const instances = await ctx.db
+      .query("meetingInstances")
+      .withIndex("by_meeting", (q) => q.eq("meetingId", args.meetingId))
+      .order("desc")
+      .collect();
+
+    const history = await Promise.all(
+      instances.map(async (instance) => {
+        const updates = await ctx.db
+          .query("updates")
+          .withIndex("by_meeting_instance", (q) =>
+            q.eq("meetingInstanceId", instance._id),
+          )
+          .collect();
+
+        const allDone =
+          updates.length > 0 && updates.every((u) => u.endedAt !== undefined);
+
+        if (!allDone) return null;
+
+        const sortedUpdates = updates.sort((a, b) => a.order - b.order);
+        const firstStarted = sortedUpdates.find(
+          (u) => u.startedAt !== undefined,
+        );
+        const completedUpdates = sortedUpdates.filter(
+          (u) => u.endedAt !== undefined,
+        );
+        const lastEnded = completedUpdates[completedUpdates.length - 1];
+
+        const duration =
+          firstStarted?.startedAt && lastEnded?.endedAt
+            ? lastEnded.endedAt - firstStarted.startedAt
+            : 0;
+
+        const perPersonDurations = await Promise.all(
+          sortedUpdates.map(async (u) => {
+            const person = await ctx.db.get(u.personId);
+            const personDuration =
+              u.endedAt && u.startedAt ? u.endedAt - u.startedAt : 0;
+            return {
+              personId: u.personId,
+              personName: person?.name ?? "Unknown",
+              duration: personDuration,
+            };
+          }),
+        );
+
+        const durations = perPersonDurations.map((p) => p.duration);
+        const longest = perPersonDurations.reduce(
+          (max, p) => (p.duration > max.duration ? p : max),
+          perPersonDurations[0],
+        );
+        const shortest = perPersonDurations.reduce(
+          (min, p) => (p.duration < min.duration ? p : min),
+          perPersonDurations[0],
+        );
+
+        return {
+          instanceId: instance._id,
+          createdAt: instance.createdAt,
+          duration,
+          participantCount: perPersonDurations.length,
+          longestUpdate: longest.personName,
+          shortestUpdate: shortest.personName,
+          perPersonDurations,
+        };
+      }),
+    );
+
+    return history.filter(Boolean);
+  },
+});
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
