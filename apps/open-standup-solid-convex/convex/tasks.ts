@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import type { MutationCtx } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 
 // ---------------------------------------------------------------------------
@@ -101,7 +102,7 @@ export const getLatestInstanceWithUpdates = query({
 
 /** Given sorted updates, create a fresh instance with first-person started. */
 async function createInstanceWithUpdates(
-  ctx: { db: any },
+  ctx: MutationCtx,
   meetingId: Id<"meetings">,
   people: Doc<"people">[],
   randomize: boolean,

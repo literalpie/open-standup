@@ -7,6 +7,8 @@
     "start": "vinxi start"
   },
   "dependencies": {
+    "@dnd-kit/helpers": "^0.3.2",
+    "@dnd-kit/solid": "^0.3.2",
     "@kobalte/core": "0.13.6",
     "@solid-primitives/date": "2.0.23",
     "@solid-primitives/media": "2.2.9",

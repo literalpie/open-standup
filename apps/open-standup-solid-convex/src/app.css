@@ -3,14 +3,13 @@
 @plugin "daisyui";
 
 @theme {
-  --color-su-complete:  var(--complete);
-  --color-su-in-progress:  var(--in-progress);
-  --color-su-complete-dark:  var(--complete-dark);
-  --color-su-in-progress-dark:  var(--in-progress-dark);
+  --color-su-complete: var(--complete);
+  --color-su-in-progress: var(--in-progress);
+  --color-su-complete-dark: var(--complete-dark);
+  --color-su-in-progress-dark: var(--in-progress-dark);
 
-
-  --animate-popover-fade-in: popover-fade-in 20000ms;
-  --animate-popover-fade-out: popover-fade-out 20000ms;
+  --animate-popover-fade-in: popover-fade-in 200ms;
+  --animate-popover-fade-out: popover-fade-out 200ms;
 
   @keyframes popover-fade-in {
     0% {
