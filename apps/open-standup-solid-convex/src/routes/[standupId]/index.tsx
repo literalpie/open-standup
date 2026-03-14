@@ -6,7 +6,7 @@ import { A, useParams } from "@solidjs/router";
 export default function StandupMeetingComponent() {
   const params = useParams();
   const meetingId = params["standupId"];
-  const standup = useStandupState(meetingId);
+  const standup = useStandupState(meetingId!);
 
   const sortedPeople = createMemo(() => {
     const series = standup.seriesState();

@@ -1,6 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "daisyui";
+
+@theme {
+  --color-su-complete: var(--complete);
+  --color-su-in-progress: var(--in-progress);
+  --color-su-complete-dark: var(--complete-dark);
+  --color-su-in-progress-dark: var(--in-progress-dark);
+}
 
 :root {
   --complete: #36d399;

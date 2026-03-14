@@ -147,7 +147,6 @@ export const getMeetingHistory = query({
           }),
         );
 
-        const durations = perPersonDurations.map((p) => p.duration);
         const longest = perPersonDurations.reduce(
           (max, p) => (p.duration > max.duration ? p : max),
           perPersonDurations[0],

@@ -4,7 +4,7 @@ import {
   FunctionReturnType,
   OptionalRestArgs,
 } from "convex/server";
-import { Context, createContext, from, onCleanup, useContext } from "solid-js";
+import { from } from "solid-js";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL;
 if (!convexUrl) {

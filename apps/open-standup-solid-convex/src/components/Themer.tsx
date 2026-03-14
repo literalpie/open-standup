@@ -18,7 +18,6 @@ const defaultColors = {
 export function Themer() {
   const prefersDark = createPrefersDark();
 
-  /* eslint-disable solid/reactivity -- makePersisted handles reactivity */
   const [completeColorLight, setCompleteColorLight] = makePersisted(
     createSignal<string>(defaultColors.complete),
     { name: "complete-color" },
@@ -35,7 +34,6 @@ export function Themer() {
     createSignal<string>(defaultColors.inProgressDark),
     { name: "in-prograss-color-dark" },
   );
-  /* eslint-enable solid/reactivity */
 
   createEffect(() => {
     if (prefersDark()) {

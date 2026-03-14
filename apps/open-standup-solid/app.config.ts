@@ -1,4 +1,5 @@
 import { defineConfig } from "@solidjs/start/config";
+import tailwindcss from "@tailwindcss/vite";
 import solidSvg, { SolidSVGPluginOptions } from "vite-plugin-solid-svg";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -21,7 +22,7 @@ const svgoConfig: SolidSVGPluginOptions = {
 
 export default defineConfig({
   vite: {
-    plugins: [solidSvg(svgoConfig), tsconfigPaths()],
+    plugins: [tailwindcss(), solidSvg(svgoConfig), tsconfigPaths()],
   },
   server: {
     preset: "vercel",

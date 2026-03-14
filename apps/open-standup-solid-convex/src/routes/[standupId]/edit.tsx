@@ -19,7 +19,7 @@ function toFormSeries(series: SeriesState): StandupSeriesNoId {
 export default function EditStandupMeetingComponent() {
   const params = useParams();
   const meetingId = params["standupId"];
-  const standup = useStandupState(meetingId);
+  const standup = useStandupState(meetingId!);
   const navigate = useNavigate();
 
   const handleSubmit = async (formData: StandupSeriesNoId) => {
