@@ -2,9 +2,10 @@
   "name": "open-standup-solid-convex",
   "type": "module",
   "scripts": {
-    "dev": "vinxi dev",
-    "build": "vinxi build",
-    "start": "vinxi start"
+    "dev": "vite dev --config app.config.ts --host 127.0.0.1",
+    "build": "vite build --config app.config.ts",
+    "start": "vite start --config app.config.ts",
+    "preview": "vite preview --config app.config.ts"
   },
   "dependencies": {
     "@dnd-kit/helpers": "^0.3.2",
@@ -15,21 +16,22 @@
     "@solid-primitives/storage": "^4.3.1",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.4",
-    "@solidjs/start": "^1.3.2",
+    "@solidjs/start": "2.0.0-alpha.2",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/solid-table": "^8.21.3",
     "chart.js": "^4.5.1",
     "convex": "^1.33.1",
     "daisyui": "^5.5.19",
+    "nitro": "3.0.1-alpha.2",
     "solid-chartjs": "^1.3.11",
     "solid-js": "^1.9.11",
     "tailwindcss": "^4.2.1",
-    "vinxi": "^0.5.11",
+    "vite": "^7.0.0",
     "vite-plugin-solid-svg": "0.8.1",
     "vite-tsconfig-paths": "^6.1.1"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   }
 }
